@@ -1,20 +1,25 @@
 package Car.project.Entities;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.*;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.PostLoad;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import Car.project.util.EncryptionUtil;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-public class client {
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,5 +59,42 @@ public class client {
 
     private String PermisDelivreLe;
 
-    private String PermisDelivreAu; 
+    private String PermisDelivreAu;
+
+    /**
+     * Chiffrement des données sensibles avant la persistance.
+     */
+    @PrePersist
+    @PreUpdate
+    private void encryptData() {
+        try {
+            this.cname = EncryptionUtil.encrypt(this.cname);
+            this.adresse = EncryptionUtil.encrypt(this.adresse);
+            this.adresseEtranger = EncryptionUtil.encrypt(this.adresseEtranger);
+            this.passeport = EncryptionUtil.encrypt(this.passeport);
+            this.cin = EncryptionUtil.encrypt(this.cin);
+            this.tel = EncryptionUtil.encrypt(this.tel);
+            this.permis = EncryptionUtil.encrypt(this.permis);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors du chiffrement des données", e);
+        }
+    }
+
+    /**
+     * Déchiffrement des données sensibles après le chargement.
+     */
+    @PostLoad
+    private void decryptData() {
+        try {
+            this.cname = EncryptionUtil.decrypt(this.cname);
+            this.adresse = EncryptionUtil.decrypt(this.adresse);
+            this.adresseEtranger = EncryptionUtil.decrypt(this.adresseEtranger);
+            this.passeport = EncryptionUtil.decrypt(this.passeport);
+            this.cin = EncryptionUtil.decrypt(this.cin);
+            this.tel = EncryptionUtil.decrypt(this.tel);
+            this.permis = EncryptionUtil.decrypt(this.permis);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors du déchiffrement des données", e);
+        }
+    }
 }

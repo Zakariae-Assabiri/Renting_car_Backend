@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class reservation {
+public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,22 +20,27 @@ public class reservation {
     @ManyToOne
     @NotNull(message = "La voiture est obligatoire")
     @JoinColumn(name = "voiture_id", nullable = false)
-    private voiture voiture;
+    private Voiture voiture;
 
     @ManyToOne
     @NotNull(message = "Le client est obligatoire")
     @JoinColumn(name = "client_id", nullable = false)
-    private client client;
+    private Client client;
 
     @ManyToOne
     @JoinColumn(name = "conducteur_secondaire_id")
-    private client conducteurSecondaire;
+    private Client conducteurSecondaire;
 
     @NotNull(message = "La date et l'heure de début sont obligatoires")
     private LocalDateTime dateDebut;
 
     @NotNull(message = "La date et l'heure de retour sont obligatoires")
     private LocalDateTime dateFin;
+
+    @NotNull(message = "Le montant total est obligatoire")
+    private float montantTotal;
+
+    private float acompte;
 
     @PrePersist
     @PreUpdate
