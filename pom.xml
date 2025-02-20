@@ -72,9 +72,18 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+		    <groupId>org.xhtmlrenderer</groupId>
+		    <artifactId>flying-saucer-pdf-openpdf</artifactId>
+		    <version>9.1.22</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
     		<groupId>jakarta.validation</groupId>
 		    <artifactId>jakarta.validation-api</artifactId>
-		    <version>3.0.2</version> <!-- Ou une version compatible -->
+		     <!-- Ou une version compatible -->
 		</dependency>
 
 		<dependency>
@@ -125,6 +134,18 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-	</repositories>
+		
+   		<repository>
+	        <id>itext</id>
+	        <name>iText Releases</name>
+	        <url>https://repo.itextsupport.com/releases</url>
+	        <releases>
+	            <enabled>true</enabled>
+	        </releases>
+	        <snapshots>
+	            <enabled>false</enabled>
+	        </snapshots>
+    	</repository>
+</repositories>
 
 </project>

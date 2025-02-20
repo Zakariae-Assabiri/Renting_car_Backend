@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Contrat de Location</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid black;
+            page-break-after: always;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 150px;
+            height: auto;
+        }
+
+        .header div {
+            text-align: right;
+            font-size: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 18px;
+            text-decoration: underline;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 10px;
+        }
+
+        .details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .details div {
+            width: 48%;
+        }
+
+        .details div p {
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .signature-box {
+            border: 1px solid black;
+            height: 100px;
+            width: 200px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="/static/logo.png" alt="Logo" />
+            <div>
+                <p>Adresse: 85, Rue Mly Ali Esherif , Tanger</p>
+                <p>Email: Chezlauto@gmail.com</p>
+                <p>Téléphone: 0606060616 / 0707013118</p>
+            </div>
+        </div>
+
+        <h1>Contrat de Location</h1>
+
+        <div class="section">
+            <div class="section-title">Informations Locataire</div>
+            <div class="details">
+                <div>
+                    <p><strong>Nom :</strong> <span th:text="${cnom}"></span></p>
+                    <p><strong>Adresse :</strong> <span th:text="${cadresse}"></span></p>
+                    <p><strong>Nationalité :</strong> <span th:text="${cnationalite}"></span></p>
+                </div>
+                <div>
+                    <p><strong>CIN :</strong> <span th:text="${ccin}"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Informations Véhicule</div>
+            <table>
+                <tr>
+                    <td><strong>Marque :</strong></td>
+                    <td><span th:text="${vmarque}"></span></td>
+                </tr>
+                <tr>
+                    <td><strong>Matricule :</strong></td>
+                    <td><span th:text="${vmatricule}"></span></td>
+                </tr>
+                <tr>
+                    <td><strong>Date de Départ :</strong></td>
+                    <td><span th:text="${vdepart}"></span></td>
+                </tr>
+                <tr>
+                    <td><strong>Date de Retour :</strong></td>
+                    <td><span th:text="${vrendre}"></span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Informations Réservation</div>
+            <table>
+                <tr>
+                    <td><strong>Départ :</strong></td>
+                    <td><span th:text="${rdepart}"></span></td>
+                </tr>
+                <tr>
+                    <td><strong>Retour Prév :</strong></td>
+                    <td><span th:text="${rreturn}"></span></td>
+                </tr>
+                <tr>
+                    <td><strong>Tarif véhicule :</strong></td>
+                    <td><span th:text="${tarif}"></span></td>
+                </tr>
+                <tr>
+                    <td><strong>Jours :</strong></td>
+                    <td><span th:text="${jours}"></span></td>
+                </tr>
+                <tr>
+                    <td><strong>Assurance :</strong></td>
+                    <td><span th:text="${assurance}"></span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="signature-section">
+            <div>
+                <p><strong>Signature Locataire :</strong></p>
+                <div class="signature-box"></div>
+            </div>
+            <div>
+                <p><strong>Signature Loueur :</strong></p>
+                <div class="signature-box"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Merci de vérifier les détails avant de signer ce contrat.</p>
+        </div>
+    </div>
+</body>
+</html>

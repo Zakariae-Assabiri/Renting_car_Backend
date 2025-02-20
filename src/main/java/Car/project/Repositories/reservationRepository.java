@@ -30,3 +30,4 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	    @Query("SELECT r FROM Reservation r WHERE r.dateDebut <= :dateFin AND r.dateFin >= :dateDebut")
 	    List<Reservation> findReservationsOverlapping(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 	}
+
