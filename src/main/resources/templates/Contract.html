@@ -4,49 +4,20 @@
     <meta charset="UTF-8" />
     <title>Contrat de Location</title>
     <style>
-        @page {
-            size: A4;
-            margin: 20mm;
-        }
-
+        /* Styles de base pour le contrat */
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 14px;
+            line-height: 1.6;
             margin: 0;
-            padding: 0;
-            width: 100%;
-        }
-
-        .container {
-            width: 100%;
-            margin: 0 auto;
             padding: 20px;
-            border: 1px solid black;
-            page-break-after: always;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .header img {
-            width: 150px;
-            height: auto;
-        }
-
-        .header div {
-            text-align: right;
-            font-size: 10px;
         }
 
         h1 {
             text-align: center;
-            font-size: 18px;
-            text-decoration: underline;
+            font-size: 24px;
             margin-bottom: 20px;
+            text-decoration: underline;
         }
 
         .section {
@@ -54,132 +25,134 @@
         }
 
         .section-title {
+            font-size: 18px;
             font-weight: bold;
+            margin-bottom: 10px;
             text-decoration: underline;
-            margin-bottom: 10px;
-        }
-
-        .details {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .details div {
-            width: 48%;
-        }
-
-        .details div p {
-            margin: 0;
-            padding: 0;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         table th, table td {
-            border: 1px solid black;
+            border: 1px solid #000;
             padding: 8px;
             text-align: left;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
         }
 
         .signature-section {
             display: flex;
             justify-content: space-between;
-            margin-top: 30px;
+            margin-top: 40px;
         }
 
         .signature-box {
-            border: 1px solid black;
+            border: 1px solid #000;
             height: 100px;
             width: 200px;
+            margin-top: 10px;
         }
 
         .footer {
             text-align: center;
-            margin-top: 20px;
-            font-size: 10px;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #555;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- En-tête du contrat -->
         <div class="header">
-            <img src="/static/logo.png" alt="Logo" />
-            <div>
-                <p>Adresse: 85, Rue Mly Ali Esherif , Tanger</p>
-                <p>Email: Chezlauto@gmail.com</p>
-                <p>Téléphone: 0606060616 / 0707013118</p>
-            </div>
+            <h1>Contrat de Location</h1>
+            <p><strong>Adresse :</strong> 85, Rue Mly Ali Esherif, Tanger</p>
+            <p><strong>Email :</strong> Chezlauto@gmail.com</p>
+            <p><strong>Téléphone :</strong> 0606060616 / 0707013118</p>
         </div>
 
-        <h1>Contrat de Location</h1>
-
+        <!-- Informations Locataire -->
         <div class="section">
             <div class="section-title">Informations Locataire</div>
-            <div class="details">
-                <div>
-                    <p><strong>Nom :</strong> <span th:text="${cnom}"></span></p>
-                    <p><strong>Adresse :</strong> <span th:text="${cadresse}"></span></p>
-                    <p><strong>Nationalité :</strong> <span th:text="${cnationalite}"></span></p>
-                </div>
-                <div>
-                    <p><strong>CIN :</strong> <span th:text="${ccin}"></span></p>
-                </div>
-            </div>
+            <table>
+                <tr>
+                    <th>Nom</th>
+                    <td><span th:text="${cnom}">Ahmed</span></td>
+                </tr>
+                <tr>
+                    <th>Adresse</th>
+                    <td><span th:text="${cadresse}">18, Rue Lafan</span></td>
+                </tr>
+                <tr>
+                    <th>Nationalité</th>
+                    <td><span th:text="${cnationalite}">Marocain</span></td>
+                </tr>
+                <tr>
+                    <th>CIN</th>
+                    <td><span th:text="${ccin}">K163763</span></td>
+                </tr>
+            </table>
         </div>
 
+        <!-- Informations Véhicule -->
         <div class="section">
             <div class="section-title">Informations Véhicule</div>
             <table>
                 <tr>
-                    <td><strong>Marque :</strong></td>
-                    <td><span th:text="${vmarque}"></span></td>
+                    <th>Marque</th>
+                    <td><span th:text="${vmarque}">Dacia</span></td>
                 </tr>
                 <tr>
-                    <td><strong>Matricule :</strong></td>
-                    <td><span th:text="${vmatricule}"></span></td>
+                    <th>Matricule</th>
+                    <td><span th:text="${vmatricule}">40-B-4123</span></td>
                 </tr>
                 <tr>
-                    <td><strong>Date de Départ :</strong></td>
-                    <td><span th:text="${vdepart}"></span></td>
+                    <th>Date de Départ</th>
+                    <td><span th:text="${vdepart}">2025-07-15T10:00</span></td>
                 </tr>
                 <tr>
-                    <td><strong>Date de Retour :</strong></td>
-                    <td><span th:text="${vrendre}"></span></td>
+                    <th>Date de Retour</th>
+                    <td><span th:text="${vrendre}">2025-07-22T10:00</span></td>
                 </tr>
             </table>
         </div>
 
+        <!-- Informations Réservation -->
         <div class="section">
             <div class="section-title">Informations Réservation</div>
             <table>
                 <tr>
-                    <td><strong>Départ :</strong></td>
-                    <td><span th:text="${rdepart}"></span></td>
+                    <th>Départ</th>
+                    <td><span th:text="${rdepart}">2025-07-15T10:00</span></td>
                 </tr>
                 <tr>
-                    <td><strong>Retour Prév :</strong></td>
-                    <td><span th:text="${rreturn}"></span></td>
+                    <th>Retour Prévu</th>
+                    <td><span th:text="${rreturn}">2025-07-22T10:00</span></td>
                 </tr>
                 <tr>
-                    <td><strong>Tarif véhicule :</strong></td>
-                    <td><span th:text="${tarif}"></span></td>
+                    <th>Tarif Véhicule</th>
+                    <td><span th:text="${tarif}">500 MAD/jour</span></td>
                 </tr>
                 <tr>
-                    <td><strong>Jours :</strong></td>
-                    <td><span th:text="${jours}"></span></td>
+                    <th>Jours</th>
+                    <td><span th:text="${jours}">7</span></td>
                 </tr>
                 <tr>
-                    <td><strong>Assurance :</strong></td>
-                    <td><span th:text="${assurance}"></span></td>
+                    <th>Assurance</th>
+                    <td><span th:text="${assurance}">Oui</span></td>
                 </tr>
             </table>
         </div>
 
+        <!-- Signature Section -->
         <div class="signature-section">
             <div>
                 <p><strong>Signature Locataire :</strong></p>
@@ -191,6 +164,7 @@
             </div>
         </div>
 
+        <!-- Footer -->
         <div class="footer">
             <p>Merci de vérifier les détails avant de signer ce contrat.</p>
         </div>

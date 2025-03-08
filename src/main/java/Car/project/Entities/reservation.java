@@ -15,33 +15,38 @@ public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Identifiant unique de la réservation
 
     @ManyToOne
     @NotNull(message = "La voiture est obligatoire")
     @JoinColumn(name = "voiture_id", nullable = false)
-    private Voiture voiture;
+    private Voiture voiture; // Voiture réservée
 
     @ManyToOne
     @NotNull(message = "Le client est obligatoire")
     @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
+    private Client client; // Client qui effectue la réservation
 
     @ManyToOne
     @JoinColumn(name = "conducteur_secondaire_id")
-    private Client conducteurSecondaire;
+    private Client conducteurSecondaire; // Conducteur secondaire (optionnel)
 
     @NotNull(message = "La date et l'heure de début sont obligatoires")
-    private LocalDateTime dateDebut;
+    private LocalDateTime dateDebut; // Date et heure de début de la réservation
 
     @NotNull(message = "La date et l'heure de retour sont obligatoires")
-    private LocalDateTime dateFin;
+    private LocalDateTime dateFin; // Date et heure de fin de la réservation
 
     @NotNull(message = "Le montant total est obligatoire")
-    private float montantTotal;
+    private float montantTotal; // Montant total de la réservation
 
-    private float acompte;
+    private float acompte; // Acompte payé (optionnel)
+    private String statut; // Statut de la réservation (ex: "Confirmée", "Annulée")
 
+    /**
+     * Validation des dates avant la persistance ou la mise à jour.
+     * Cette méthode vérifie que la date de fin n'est pas antérieure à la date de début.
+     */
     @PrePersist
     @PreUpdate
     private void validateDates() {
