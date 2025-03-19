@@ -6,6 +6,7 @@ import Car.project.Services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class ReservationController {
 
     // Créer une nouvelle réservation
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         Reservation newReservation = reservationService.createReservation(reservation);
         return new ResponseEntity<>(newReservation, HttpStatus.CREATED);
@@ -27,6 +29,7 @@ public class ReservationController {
 
     // Obtenir une réservation par son ID
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
         Optional<Reservation> reservation = reservationService.getReservationById(id);
         return reservation.map(ResponseEntity::ok)
@@ -35,6 +38,7 @@ public class ReservationController {
 
     // Obtenir toutes les réservations
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<Reservation> getAllReservations() {
         return reservationService.getAllReservations();
     }
@@ -42,6 +46,7 @@ public class ReservationController {
     // Mettre à jour une réservation
  
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<Reservation> updateReservation(@PathVariable Long id,@RequestBody Reservation reservation) {
     	reservation.setId(id); 
     	Reservation updatedReservation = reservationService.updateReservation(reservation);
@@ -50,6 +55,7 @@ public class ReservationController {
 
     // Supprimer une réservation
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         reservationService.deleteReservation(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
