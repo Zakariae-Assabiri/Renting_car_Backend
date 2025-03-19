@@ -5,10 +5,12 @@ import Car.project.Services.ContractService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/contracts")
+@PreAuthorize("hasAuthority('ADMIN') or @securityService.isReservationOwner(#reservationId)")
 public class ContractController {
 
     private final ContractService contractService;

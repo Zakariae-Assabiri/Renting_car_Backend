@@ -5,6 +5,7 @@ import Car.project.Services.VoitureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class VoitureController {
 
     // Créer une nouvelle voiture
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Voiture> createVoiture(@RequestBody Voiture voiture) {
         Voiture newVoiture = voitureService.createVoiture(voiture);
         return new ResponseEntity<>(newVoiture, HttpStatus.CREATED);
@@ -41,6 +43,7 @@ public class VoitureController {
 
     // Mettre à jour une voiture
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Voiture> updateVoiture(@PathVariable Long id,@RequestBody Voiture voiture) {
     	voiture.setId(id); 
     	Voiture updatedVoiture = voitureService.updateVoiture(voiture);
@@ -49,6 +52,7 @@ public class VoitureController {
 
     // Supprimer une voiture
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteVoiture(@PathVariable Long id) {
         voitureService.deleteVoiture(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
