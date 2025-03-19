@@ -39,13 +39,13 @@ public class Client {
     @Size(max = 100, message = "L'adresse à l'étranger ne peut pas dépasser 100 caractères")
     private String adresseEtranger; // Adresse à l'étranger (optionnelle)
 
-    @Size(max = 20, message = "Le passeport ne peut pas dépasser 20 caractères")
+    @Size(max = 100, message = "Le passeport ne peut pas dépasser 20 caractères")
     private String passeport; // Numéro de passeport (optionnel)
 
     private String delivreLePasseport; // Date de délivrance du passeport (optionnelle)
 
     @NotBlank(message = "Le CIN est obligatoire")
-    @Size(max = 15, message = "Le CIN ne peut pas dépasser 15 caractères")
+    @Size(max = 100, message = "Le CIN ne peut pas dépasser 15 caractères")
     private String cin; // Numéro de CIN du client
 
     private String CinDelivreLe; // Date de délivrance du CIN (optionnelle)
