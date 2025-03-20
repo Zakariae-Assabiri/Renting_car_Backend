@@ -34,6 +34,8 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll() // Autorise les routes d'authentification
                 .requestMatchers("/api/admin/**").hasRole("ADMIN") // Protège les routes admin
                 .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN") // Accessible aux utilisateurs et admins
+                .requestMatchers("/api/dialogflow/**").permitAll() 
+                .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated() // Toutes les autres routes nécessitent une authentification
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Mode JWT
