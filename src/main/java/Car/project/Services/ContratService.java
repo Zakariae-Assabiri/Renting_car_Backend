@@ -9,12 +9,12 @@ import Car.project.Repositories.ReservationRepository;
 import java.io.ByteArrayOutputStream;
 
 @Service
-public class ContractService {
+public class ContratService {
 
     private final TemplateEngine templateEngine;
     private final ReservationRepository reservationRepository;
 
-    public ContractService(TemplateEngine templateEngine, ReservationRepository reservationRepository) {
+    public ContratService(TemplateEngine templateEngine, ReservationRepository reservationRepository) {
         this.templateEngine = templateEngine;
         this.reservationRepository = reservationRepository;
     }

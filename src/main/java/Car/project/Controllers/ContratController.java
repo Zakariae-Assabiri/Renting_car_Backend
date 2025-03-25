@@ -1,7 +1,7 @@
 package Car.project.Controllers;
 
 
-import Car.project.Services.ContractService;
+import Car.project.Services.ContratService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/contracts")
 @PreAuthorize("hasAuthority('ADMIN') or @securityService.isReservationOwner(#reservationId)")
-public class ContractController {
+public class ContratController {
 
-    private final ContractService contractService;
+    private final ContratService contractService;
 
-    public ContractController(ContractService contractService) {
+    public ContratController(ContratService contractService) {
         this.contractService = contractService;
     }
 

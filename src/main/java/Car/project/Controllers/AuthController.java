@@ -8,6 +8,7 @@ import Car.project.dto.RegisterRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -22,9 +23,9 @@ public class AuthController {
 
     // Route pour s'enregistrer
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
-        User user = userService.register(registerRequest);
-        return ResponseEntity.ok("Utilisateur enregistré avec succès !");
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
+        User newUser = userService.register(registerRequest);
+        return ResponseEntity.ok(newUser);
     }
 
     // Route pour se connecter

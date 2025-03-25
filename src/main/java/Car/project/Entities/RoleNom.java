@@ -1,7 +1,7 @@
 package Car.project.Entities;
 
 
-public enum RoleName {
+public enum RoleNom {
     ROLE_ADMIN,
     ROLE_CLIENT
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import Car.project.Entities.Expense;
+import Car.project.Entities.Depense;
 import Car.project.Services.FinanceService;
 
 @RestController
@@ -26,11 +26,11 @@ public class FinanceController {
 
     // Ajouter une dépense
     @PostMapping("/expense")
-    public ResponseEntity<Expense> ajouterExpense(@RequestBody Expense expense) {
+    public ResponseEntity<Depense> ajouterExpense(@RequestBody Depense expense) {
         if (expense == null) {
             return ResponseEntity.badRequest().body(null);
         }
-        Expense nouvelleExpense = financeService.ajouterExpense(expense);
+        Depense nouvelleExpense = financeService.ajouterExpense(expense);
         return ResponseEntity.ok(nouvelleExpense);
     }
 
