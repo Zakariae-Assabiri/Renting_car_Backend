@@ -5,6 +5,9 @@ import Car.project.Entities.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
+import java.util.stream.Collectors;
+import java.util.Map;
+
 
 import java.util.Date;
 
@@ -15,7 +18,13 @@ public class JwtTokenProvider {
     private final long EXPIRATION_TIME = 86400000;  // 1 jour
 
     public String generateToken(User user) {
+    	 Map<String, Object> claims = Map.of(
+    		        "authorities", user.getRoles().stream()
+    		            .map(role -> role.getNom().name()) // Exemple : "ROLE_ADMIN"
+    		            .collect(Collectors.toList())
+    		    );
         return Jwts.builder()
+        		.setClaims(claims)
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

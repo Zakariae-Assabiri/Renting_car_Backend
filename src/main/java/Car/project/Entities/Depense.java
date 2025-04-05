@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Expense {
+public class Depense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

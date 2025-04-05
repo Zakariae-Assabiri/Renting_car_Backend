@@ -21,7 +21,7 @@ public class VoitureController {
 
     // Créer une nouvelle voiture
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Voiture> createVoiture(@RequestBody Voiture voiture) {
         Voiture newVoiture = voitureService.createVoiture(voiture);
         return new ResponseEntity<>(newVoiture, HttpStatus.CREATED);
@@ -43,7 +43,7 @@ public class VoitureController {
 
     // Mettre à jour une voiture
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Voiture> updateVoiture(@PathVariable Long id,@RequestBody Voiture voiture) {
     	voiture.setId(id); 
     	Voiture updatedVoiture = voitureService.updateVoiture(voiture);
@@ -52,7 +52,7 @@ public class VoitureController {
 
     // Supprimer une voiture
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteVoiture(@PathVariable Long id) {
         voitureService.deleteVoiture(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

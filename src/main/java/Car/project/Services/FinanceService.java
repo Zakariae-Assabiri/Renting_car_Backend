@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import Car.project.Entities.Expense;
-import Car.project.Repositories.ExpenseRepository;
+import Car.project.Entities.Depense;
+import Car.project.Repositories.DepenseRepository;
 import Car.project.Repositories.ReservationRepository;
 
 @Service
@@ -17,14 +17,14 @@ public class FinanceService {
     private ReservationRepository reservationRepository;
 
     @Autowired
-    private ExpenseRepository expenseRepository;
+    private DepenseRepository dépenseRepository;
 
     // Ajouter une dépense
-    public Expense ajouterExpense(Expense expense) {
+    public Depense ajouterExpense(Depense expense) {
         if (expense == null) {
             throw new IllegalArgumentException("La dépense ne peut pas être nulle.");
         }
-        return expenseRepository.save(expense);
+        return dépenseRepository.save(expense);
     }
 
     // Calculer le revenu total des réservations confirmées sur une période
@@ -41,7 +41,7 @@ public class FinanceService {
         if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
             throw new IllegalArgumentException("Les dates fournies sont invalides.");
         }
-        Double depensesTotales = expenseRepository.sumMontantByDateBetween(startDate, endDate);
+        Double depensesTotales = dépenseRepository.sumMontantByDateBetween(startDate, endDate);
         return (depensesTotales != null) ? depensesTotales : 0.0;
     }
 

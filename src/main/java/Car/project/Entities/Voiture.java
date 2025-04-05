@@ -48,4 +48,6 @@ public class Voiture {
     private float prixDeBase; // Prix de base de la location
 
     private Boolean estAutomate; // Indique si la voiture est automatique
+    private String photoPath; // Chemin local de l'image
+
 }

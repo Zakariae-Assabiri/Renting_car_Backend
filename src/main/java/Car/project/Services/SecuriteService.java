@@ -9,12 +9,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SecurityService {
+public class SecuriteService {
 
     private final ReservationRepository reservationRepository;
     private final ClientRepository clientRepository;
 
-    public SecurityService(ReservationRepository reservationRepository, ClientRepository clientRepository) {
+    public SecuriteService(ReservationRepository reservationRepository, ClientRepository clientRepository) {
         this.reservationRepository = reservationRepository;
         this.clientRepository = clientRepository;
     }
