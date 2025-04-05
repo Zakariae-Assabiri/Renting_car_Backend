@@ -36,6 +36,11 @@ public class SecuriteConfig {
                 .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN") // Accessible aux utilisateurs et admins
                 .requestMatchers("/api/dialogflow/**").permitAll() 
                 .requestMatchers("/api/ocr/**").permitAll() 
+                .requestMatchers(
+                		"/swagger-ui/**",
+                		 "/v3/api-docs/**", 
+                		 "/swagger-ui.html"
+                		).permitAll() 
                 .anyRequest().authenticated() // Toutes les autres routes nécessitent une authentification
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Mode JWT
