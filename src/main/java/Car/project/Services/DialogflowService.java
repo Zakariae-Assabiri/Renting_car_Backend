@@ -4,6 +4,9 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.dialogflow.v2.*;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
+
+import jakarta.annotation.PreDestroy;
+
 import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.util.Map;
@@ -65,5 +68,11 @@ public class DialogflowService {
 
         DetectIntentResponse response = sessionsClient.detectIntent(request);
         return response.getQueryResult().getFulfillmentText();
+    }
+    @PreDestroy
+    public void shutdown() {
+        if (sessionsClient != null) {
+            sessionsClient.close(); // ferme correctement le canal
+        }
     }
 }

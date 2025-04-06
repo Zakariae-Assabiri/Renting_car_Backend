@@ -26,7 +26,7 @@ public class Client {
     private Long id; // Identifiant unique du client
 
     @NotBlank(message = "Le nom est obligatoire")
-    @Size(max = 50, message = "Le nom ne peut pas dépasser 50 caractères")
+    @Size(max = 100, message = "Le nom ne peut pas dépasser 50 caractères")
     private String cname; // Nom du client
 
     @NotBlank(message = "L'adresse est obligatoire")
@@ -51,7 +51,6 @@ public class Client {
     private String CinDelivreLe; // Date de délivrance du CIN (optionnelle)
 
     @NotBlank(message = "Le téléphone est obligatoire")
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Le numéro de téléphone doit être valide")
     private String tel; // Numéro de téléphone du client
 
     @NotBlank(message = "Le numéro de permis est obligatoire")
@@ -68,34 +67,36 @@ public class Client {
     @PreUpdate
     private void encryptData() {
         try {
-            this.cname = EncryptionUtil.encrypt(this.cname);
-            this.adresse = EncryptionUtil.encrypt(this.adresse);
-            this.adresseEtranger = EncryptionUtil.encrypt(this.adresseEtranger);
-            this.passeport = EncryptionUtil.encrypt(this.passeport);
-            this.cin = EncryptionUtil.encrypt(this.cin);
-            this.tel = EncryptionUtil.encrypt(this.tel);
-            this.permis = EncryptionUtil.encrypt(this.permis);
+            this.cname = this.cname != null ? EncryptionUtil.encrypt(this.cname) : null;
+            this.adresse = this.adresse != null ? EncryptionUtil.encrypt(this.adresse) : null;
+            this.adresseEtranger = this.adresseEtranger != null ? EncryptionUtil.encrypt(this.adresseEtranger) : null;
+            this.passeport = this.passeport != null ? EncryptionUtil.encrypt(this.passeport) : null;
+            this.cin = this.cin != null ? EncryptionUtil.encrypt(this.cin) : null;
+            this.tel = this.tel != null ? EncryptionUtil.encrypt(this.tel) : null;
+            this.permis = this.permis != null ? EncryptionUtil.encrypt(this.permis) : null;
         } catch (Exception e) {
             throw new RuntimeException("Erreur lors du chiffrement des données", e);
         }
     }
+
 
     /**
      * Déchiffrement des données sensibles après le chargement.
      * Cette méthode est appelée automatiquement après que l'entité est chargée depuis la base de données.
      */
     @PostLoad
-    private void decryptData() {
-        try {
-            this.cname = EncryptionUtil.decrypt(this.cname);
-            this.adresse = EncryptionUtil.decrypt(this.adresse);
-            this.adresseEtranger = EncryptionUtil.decrypt(this.adresseEtranger);
-            this.passeport = EncryptionUtil.decrypt(this.passeport);
-            this.cin = EncryptionUtil.decrypt(this.cin);
-            this.tel = EncryptionUtil.decrypt(this.tel);
-            this.permis = EncryptionUtil.decrypt(this.permis);
-        } catch (Exception e) {
-            throw new RuntimeException("Erreur lors du déchiffrement des données", e);
-        }
+    	private void decryptData() {
+    	    try {
+    	        this.cname = this.cname != null ? EncryptionUtil.decrypt(this.cname) : null;
+    	        this.adresse = this.adresse != null ? EncryptionUtil.decrypt(this.adresse) : null;
+    	        this.adresseEtranger = this.adresseEtranger != null ? EncryptionUtil.decrypt(this.adresseEtranger) : null;
+    	        this.passeport = this.passeport != null ? EncryptionUtil.decrypt(this.passeport) : null;
+    	        this.cin = this.cin != null ? EncryptionUtil.decrypt(this.cin) : null;
+    	        this.tel = this.tel != null ? EncryptionUtil.decrypt(this.tel) : null;
+    	        this.permis = this.permis != null ? EncryptionUtil.decrypt(this.permis) : null;
+    	    } catch (Exception e) {
+    	        throw new RuntimeException("Erreur lors du déchiffrement des données", e);
+    	    }
+    	}
+
     }
-}

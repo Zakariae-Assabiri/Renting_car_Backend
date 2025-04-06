@@ -36,6 +36,7 @@ public class SecuriteConfig {
                 .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN") // Accessible aux utilisateurs et admins
                 .requestMatchers("/api/dialogflow/**").permitAll() 
                 .requestMatchers("/api/ocr/**").permitAll() 
+                .requestMatchers("/api/").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(
                 		"/swagger-ui/**",
                 		 "/v3/api-docs/**", 
