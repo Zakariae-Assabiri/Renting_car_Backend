@@ -21,7 +21,7 @@ import java.util.List;
 @Configuration
 @EnableMethodSecurity // Active @PreAuthorize et @Secured
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecuriteConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
@@ -34,6 +34,14 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll() // Autorise les routes d'authentification
                 .requestMatchers("/api/admin/**").hasRole("ADMIN") // Protège les routes admin
                 .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN") // Accessible aux utilisateurs et admins
+                .requestMatchers("/api/dialogflow/**").permitAll() 
+                .requestMatchers("/api/ocr/**").permitAll() 
+                .requestMatchers("/api/").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(
+                		"/swagger-ui/**",
+                		 "/v3/api-docs/**", 
+                		 "/swagger-ui.html"
+                		).permitAll() 
                 .anyRequest().authenticated() // Toutes les autres routes nécessitent une authentification
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Mode JWT

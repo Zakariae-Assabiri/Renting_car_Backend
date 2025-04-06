@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/dashboard")
-@PreAuthorize("hasAuthority('ADMIN')")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class DashboardController {
 
     @Autowired
