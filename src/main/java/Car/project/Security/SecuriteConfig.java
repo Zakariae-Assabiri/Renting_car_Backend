@@ -30,6 +30,8 @@ public class SecuriteConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
+            .cors() 
+            .and()
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll() // Autorise les routes d'authentification
                 .requestMatchers("/api/admin/**").hasRole("ADMIN") // Protège les routes admin
