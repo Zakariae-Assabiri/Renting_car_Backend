@@ -58,12 +58,14 @@ public class UserService {
         user.setEnabled(false); // Désactivé jusqu’à vérification email
 
         Set<Role> roles = new HashSet<>();
+        
         if (registerRequest.getRoles() == null || registerRequest.getRoles().isEmpty()) {
             Role defaultRole = roleRepository.findByNom(RoleNom.ROLE_CLIENT)
                     .orElseThrow(() -> new RuntimeException("Erreur : ROLE_CLIENT non trouvé."));
             roles.add(defaultRole);
         } else {
             for (String roleName : registerRequest.getRoles()) {
+            	 System.out.println("Role reçu : >" + roleName + "<");
                 Role role = roleRepository.findByNom(RoleNom.valueOf(roleName))
                         .orElseThrow(() -> new RuntimeException("Erreur : rôle non trouvé."));
                 roles.add(role);
@@ -85,7 +87,7 @@ public class UserService {
         tokenRepository.save(token);
 
         // Envoie l’email de vérification
-        String verificationUrl = "http://localhost:8080/api/verify-email?token=" + tokenValue;
+        String verificationUrl = "http://localhost:4200/verify-email?token=" + tokenValue;
         String subject = "Vérification de ton adresse email";
         String body = "<p>Bonjour " + user.getUsername() + ",</p>" +
                 "<p>Clique ici pour activer ton compte :</p>" +
