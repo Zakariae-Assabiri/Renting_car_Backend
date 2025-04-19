@@ -1,9 +1,12 @@
 package Car.project.Entities;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -45,9 +48,11 @@ public class Voiture {
     private String type; // Type de véhicule (ex: Berline, SUV)
 
     @NotNull(message = "Le prix de base est obligatoire")
-    private float prixDeBase; // Prix de base de la location
+    private Double prixDeBase; // Prix de base de la location
 
     private Boolean estAutomate; // Indique si la voiture est automatique
-    private String photoPath; // Chemin local de l'image
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] photo;
 
 }

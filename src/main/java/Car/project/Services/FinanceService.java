@@ -1,6 +1,6 @@
 package Car.project.Services;
 
-import java.time.LocalDateTime; 
+import java.time.LocalDateTime;  
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,23 +9,43 @@ import org.springframework.stereotype.Service;
 import Car.project.Entities.Depense;
 import Car.project.Repositories.DepenseRepository;
 import Car.project.Repositories.ReservationRepository;
+import java.util.List;
+import java.util.Optional;
 
-@Service
-public class FinanceService {
+    @Service
+    public class FinanceService {
+        @Autowired
+        private ReservationRepository reservationRepository;
 
-    @Autowired
-    private ReservationRepository reservationRepository;
+        @Autowired
+        private DepenseRepository dépenseRepository;
+        @Autowired
+        private DepenseRepository depenseRepository;
 
-    @Autowired
-    private DepenseRepository dépenseRepository;
-
-    // Ajouter une dépense
-    public Depense ajouterExpense(Depense expense) {
-        if (expense == null) {
-            throw new IllegalArgumentException("La dépense ne peut pas être nulle.");
+        // Créer une dépense
+        public Depense createDepense(Depense depense) {
+            return depenseRepository.save(depense);
         }
-        return dépenseRepository.save(expense);
-    }
+
+        // Obtenir une dépense par ID
+        public Optional<Depense> getDepenseById(Long id) {
+            return depenseRepository.findById(id);
+        }
+
+        // Obtenir toutes les dépenses
+        public List<Depense> getAllDepenses() {
+            return depenseRepository.findAll();
+        }
+
+        // Mettre à jour une dépense
+        public Depense updateDepense(Depense depense) {
+            return depenseRepository.save(depense);
+        }
+
+        // Supprimer une dépense
+        public void deleteDepense(Long id) {
+            depenseRepository.deleteById(id);
+        }
 
     // Calculer le revenu total des réservations confirmées sur une période
     public Double calculerRevenuTotalConfirmeParPeriode(LocalDateTime startDate, LocalDateTime endDate) {
