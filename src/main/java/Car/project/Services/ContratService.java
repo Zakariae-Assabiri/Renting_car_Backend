@@ -7,7 +7,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import Car.project.Entities.Reservation;
 import Car.project.Repositories.ReservationRepository;
 import java.io.ByteArrayOutputStream;
-
+import java.time.format.DateTimeFormatter;
 @Service
 public class ContratService {
 
@@ -27,6 +27,10 @@ public class ContratService {
 
         // Création d'un contexte Thymeleaf avec les données de la réservation
         Context context = new Context();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        String dateDebutStr = reservation.getDateDebut().format(formatter);
+        String dateFinStr = reservation.getDateFin().format(formatter);
         context.setVariable("id", reservation.getId());
         context.setVariable("cnom", reservation.getClient().getCname());
         context.setVariable("cadresse", reservation.getClient().getAdresse());
@@ -34,8 +38,8 @@ public class ContratService {
         context.setVariable("ccin", reservation.getClient().getCin());
         context.setVariable("vmarque", reservation.getVoiture().getMarque());
         context.setVariable("vmatricule", reservation.getVoiture().getMatricule());
-        context.setVariable("vdepart", reservation.getDateDebut());
-        context.setVariable("vrendre", reservation.getDateFin());
+        context.setVariable("vdepart",dateDebutStr);
+        context.setVariable("vrendre", dateFinStr);
 
         // Générer le contenu HTML du contrat à partir du modèle Thymeleaf
         String htmlContent = templateEngine.process("Contract", context);
