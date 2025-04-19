@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.PostLoad;
@@ -59,6 +60,12 @@ public class Client {
     private String PermisDelivreLe; // Date de délivrance du permis (optionnelle)
     private String PermisDelivreAu; // Lieu de délivrance du permis (optionnelle)
 
+    @Lob
+    private byte[] photoCIN;
+
+    @Lob
+    private byte[] photoPermis;
+
     /**
      * Chiffrement des données sensibles avant la persistance.
      * Cette méthode est appelée automatiquement avant que l'entité ne soit sauvegardée ou mise à jour.
@@ -74,6 +81,8 @@ public class Client {
             this.cin = this.cin != null ? EncryptionUtil.encrypt(this.cin) : null;
             this.tel = this.tel != null ? EncryptionUtil.encrypt(this.tel) : null;
             this.permis = this.permis != null ? EncryptionUtil.encrypt(this.permis) : null;
+            this.photoCIN =  this.photoCIN != null ? EncryptionUtil.encryptBytes(this.photoCIN) : null;
+            this.photoPermis = this.photoPermis != null ? EncryptionUtil.encryptBytes(this.photoPermis) : null;
         } catch (Exception e) {
             throw new RuntimeException("Erreur lors du chiffrement des données", e);
         }
@@ -94,6 +103,8 @@ public class Client {
     	        this.cin = this.cin != null ? EncryptionUtil.decrypt(this.cin) : null;
     	        this.tel = this.tel != null ? EncryptionUtil.decrypt(this.tel) : null;
     	        this.permis = this.permis != null ? EncryptionUtil.decrypt(this.permis) : null;
+    	        this.photoCIN = this.photoCIN != null ? EncryptionUtil.decryptBytes(this.photoCIN) : null;
+    	        this.photoPermis =    this.photoPermis != null ? EncryptionUtil.decryptBytes(this.photoPermis) : null;
     	    } catch (Exception e) {
     	        throw new RuntimeException("Erreur lors du déchiffrement des données", e);
     	    }

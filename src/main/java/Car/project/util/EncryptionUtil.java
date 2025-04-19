@@ -95,4 +95,48 @@ public class EncryptionUtil {
         byte[] decryptedData = cipher.doFinal(encryptedBytes);
         return new String(decryptedData);
     }
+ // Chiffrement d'un tableau de bytes (image, document, etc.)
+    public static byte[] encryptBytes(byte[] data) throws Exception {
+        checkKey();
+        byte[] decodedKey = Base64.getDecoder().decode(secretKey);
+        SecretKeySpec key = new SecretKeySpec(decodedKey, "AES");
+
+        // Génère un IV aléatoire
+        byte[] iv = generateIV();
+        GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
+
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, key, spec);
+
+        byte[] encryptedData = cipher.doFinal(data);
+
+        // Combine IV + données chiffrées
+        byte[] combined = new byte[iv.length + encryptedData.length];
+        System.arraycopy(iv, 0, combined, 0, iv.length);
+        System.arraycopy(encryptedData, 0, combined, iv.length, encryptedData.length);
+
+        return combined; // On retourne un tableau de bytes prêt à être stocké
+    }
+
+    // Déchiffrement d'un tableau de bytes
+    public static byte[] decryptBytes(byte[] encryptedData) throws Exception {
+        checkKey();
+        byte[] decodedKey = Base64.getDecoder().decode(secretKey);
+        SecretKeySpec key = new SecretKeySpec(decodedKey, "AES");
+
+        // Extrait IV
+        byte[] iv = new byte[GCM_IV_LENGTH];
+        System.arraycopy(encryptedData, 0, iv, 0, iv.length);
+
+        // Extrait données chiffrées
+        byte[] encryptedBytes = new byte[encryptedData.length - iv.length];
+        System.arraycopy(encryptedData, iv.length, encryptedBytes, 0, encryptedBytes.length);
+
+        GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, key, spec);
+
+        return cipher.doFinal(encryptedBytes);
+    }
+
 }
