@@ -85,13 +85,40 @@ public class VoitureController {
     }
 
     // Mettre à jour une voiture
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Voiture> updateVoiture(@PathVariable Long id,@RequestBody Voiture voiture) {
-    	voiture.setId(id); 
-    	Voiture updatedVoiture = voitureService.updateVoiture(voiture);
-        return ResponseEntity.ok(updatedVoiture);
+    public ResponseEntity<Voiture> updateVoiture(@PathVariable Long id, @ModelAttribute VoitureDTO voitureDTO) {
+        try {
+            Optional<Voiture> optionalVoiture = voitureService.getVoitureById(id);
+            if (optionalVoiture.isPresent()) {
+                Voiture voiture = optionalVoiture.get();
+                voiture.setVname(voitureDTO.getVname());
+                voiture.setCouleur(voitureDTO.getCouleur());
+                voiture.setMarque(voitureDTO.getMarque());
+                voiture.setMatricule(voitureDTO.getMatricule());
+                voiture.setModele(voitureDTO.getModele());
+                voiture.setCarburant(voitureDTO.getCarburant());
+                voiture.setCapacite(voitureDTO.getCapacite());
+                voiture.setType(voitureDTO.getType());
+                voiture.setPrixDeBase(voitureDTO.getPrixDeBase());
+                voiture.setEstAutomate(voitureDTO.getEstAutomate());
+
+                if (voitureDTO.getPhoto() != null && !voitureDTO.getPhoto().isEmpty()) {
+                    voiture.setPhoto(voitureDTO.getPhoto().getBytes());
+                }
+
+                Voiture updatedVoiture = voitureService.updateVoiture(voiture);
+                return new ResponseEntity<>(updatedVoiture, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     // Supprimer une voiture
     @DeleteMapping("/{id}")
