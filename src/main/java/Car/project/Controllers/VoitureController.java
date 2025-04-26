@@ -24,10 +24,8 @@ public class VoitureController {
 
     @Autowired
     private VoitureService voitureService;
-
     // Créer une nouvelle voiture
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Voiture> createVoiture(@ModelAttribute VoitureDTO voitureDTO) {
         try {
             Voiture voiture = new Voiture();
@@ -86,7 +84,6 @@ public class VoitureController {
 
     // Mettre à jour une voiture
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Voiture> updateVoiture(@PathVariable Long id, @ModelAttribute VoitureDTO voitureDTO) {
         try {
             Optional<Voiture> optionalVoiture = voitureService.getVoitureById(id);
@@ -121,8 +118,8 @@ public class VoitureController {
 
 
     // Supprimer une voiture
+    
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteVoiture(@PathVariable Long id) {
         voitureService.deleteVoiture(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

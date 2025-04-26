@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/contracts")
-@PreAuthorize("hasAuthority('ROLE_ADMIN') or @securityService.isReservationOwner(#reservationId)")
+@PreAuthorize("@securityService.isReservationOwner(#reservationId)")
 public class ContratController {
 
     private final ContratService contractService;

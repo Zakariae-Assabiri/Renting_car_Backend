@@ -26,7 +26,6 @@ public class ClientController {
 
     // Créer un nouveau client
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Client> createClient(@ModelAttribute ClientDTO clientDTO) {
         try {
             Client client = new Client();
@@ -61,7 +60,7 @@ public class ClientController {
 
 
     // Obtenir un client par ID
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @securityService.isClientOwner(#id)")
+    @PreAuthorize("@securityService.isClientOwner(#id)")
     @GetMapping("/{id}")
     public ResponseEntity<Client> getClientById(@PathVariable Long id) {
         Optional<Client> client = clientService.getClientById(id);
@@ -71,7 +70,6 @@ public class ClientController {
 
     // Obtenir la liste de tous les clients
     @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<Client>> getAllClients() {
         List<Client> clients = clientService.getAllClients();
         return new ResponseEntity<>(clients, HttpStatus.OK);
@@ -80,7 +78,7 @@ public class ClientController {
     // Mettre à jour un client 
     
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @securityService.isClientOwner(#id)")
+    @PreAuthorize("@securityService.isClientOwner(#id)")
     public ResponseEntity<Client> updateClient(@PathVariable Long id, @ModelAttribute ClientDTO clientDTO) {
         try {
             Optional<Client> optionalClient = clientService.getClientById(id);
@@ -120,7 +118,6 @@ public class ClientController {
 
     // Supprimer un client
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         Optional<Client> clientOptional = clientService.getClientById(id);
 

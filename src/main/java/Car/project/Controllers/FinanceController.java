@@ -15,7 +15,6 @@ import Car.project.Services.FinanceService;
 
 @RestController
 @RequestMapping("/api/finance")
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class FinanceController {
 
     @Autowired

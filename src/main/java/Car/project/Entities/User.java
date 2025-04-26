@@ -38,9 +38,12 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-            .map(role -> (GrantedAuthority) () -> role.getNom().name())
+            .flatMap(role -> role.getPermissions().stream())
+            .map(permission -> (GrantedAuthority) () -> permission.getEndpoint() + ":" + permission.getMethod())
             .collect(Collectors.toSet());
     }
+
+
 
     @Override
     public boolean isAccountNonExpired() {

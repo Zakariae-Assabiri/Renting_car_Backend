@@ -25,31 +25,30 @@ public class SecuriteConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
-
+    private final PermissionFilter permissionFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
-            .cors() 
+            .cors()
             .and()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll() // Autorise les routes d'authentification
-                .requestMatchers("/api/admin/**").hasRole("ADMIN") // Protège les routes admin
-                .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN") // Accessible aux utilisateurs et admins
-                .requestMatchers("/api/dialogflow/**").permitAll() 
-                .requestMatchers("/api/ocr/**").permitAll() 
-                .requestMatchers("/api/").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(
-                		"/swagger-ui/**",
-                		 "/v3/api-docs/**", 
-                		 "/swagger-ui.html"
-                		).permitAll() 
-                .anyRequest().authenticated() // Toutes les autres routes nécessitent une authentification
+                    "/auth/**", 
+                    "/api/dialogflow/**", 
+                    "/api/ocr/**", 
+                    "/swagger-ui/**", 
+                    "/v3/api-docs/**", 
+                    "/swagger-ui.html",
+                    "/api/permissions/**",
+                    "/api/roles/**"
+                ).permitAll()
+                .anyRequest().authenticated() // Toutes les autres routes doivent passer par PermissionFilter
             )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Mode JWT
-            .authenticationProvider(authenticationProvider()) // Définit le provider d'authentification
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Ajoute le filtre JWT
-
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Authentifie d'abord avec JWT
+            .addFilterAfter(permissionFilter, UsernamePasswordAuthenticationFilter.class); 
         return http.build();
     }
 
