@@ -18,16 +18,12 @@ public class PermissionFilter extends OncePerRequestFilter {
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    // 🔥 Définir les endpoints publics par (path, method)
+    //  Définir les endpoints publics par (path, method)
     private final List<PublicEndpoint> publicEndpoints = List.of(
-            new PublicEndpoint("/api/clients", "GET"),
+   
             new PublicEndpoint("/api/voitures/**", "GET"),
             new PublicEndpoint("/api/voitures/*/photo", "GET"),
-            new PublicEndpoint("/api/auth/**", "ANY"),
-            new PublicEndpoint("/api/reservations/{id}", "GET"), // Uniquement obtenir une reservation par ID pour user connecté
-            new PublicEndpoint("/api/finance/rapport", "GET"), // si tu veux le rendre public (sinon enlève-le)
-            new PublicEndpoint("/api/finance/revenu", "GET"),
-            new PublicEndpoint("/api/finance/depenses-total", "GET")
+            new PublicEndpoint("/api/auth/**", "ANY")
     );
 
     @Override

@@ -78,16 +78,16 @@ public class DashboardService {
 
     // 7. Calculer la durée moyenne des réservations en heures
     public Double calculerDureeMoyenneReservations() {
-        List<Reservation> reservations = reservationRepository.findAllReservations();
-        if (reservations.isEmpty()) {
+        List<Object[]> dates = reservationRepository.findDatesDebutEtFin();
+        if (dates.isEmpty()) {
             return 0.0;
         }
 
-        long totalDuree = reservations.stream()
-                .mapToLong(reservation -> ChronoUnit.HOURS.between(reservation.getDateDebut(), reservation.getDateFin()))
+        long totalDuree = dates.stream()
+                .mapToLong(date -> ChronoUnit.HOURS.between((LocalDateTime) date[0], (LocalDateTime) date[1]))
                 .sum();
 
-        return (double) totalDuree / reservations.size();
+        return (double) totalDuree / dates.size();
     }
 
     // 8. Calculer le revenu généré sur une période spécifique
