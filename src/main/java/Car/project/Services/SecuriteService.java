@@ -22,20 +22,40 @@ public class SecuriteService {
     // Vérifier si l'utilisateur est propriétaire de la réservation
     public boolean isReservationOwner(Long reservationId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // Supposons que c'est l'email du client
+        String username = authentication.getName(); // C'est le username du User
 
         return reservationRepository.findById(reservationId)
-                .map(reservation -> reservation.getClient().getAdresse().equals(username))
+                .map(reservation -> {
+                    Client client = reservation.getClient();
+                    if (client != null && client.getUser() != null) {
+                        return client.getUser().getUsername().equals(username);
+                    }
+                    return false;
+                })
                 .orElse(false);
     }
 
     // Vérifier si l'utilisateur est propriétaire du client
     public boolean isClientOwner(Long clientId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // Supposons que c'est l'email du client
+        String username = authentication.getName(); // username du User
 
         return clientRepository.findById(clientId)
-                .map(client -> client.getAdresse().equals(username))
+                .map(client -> {
+                    if (client.getUser() != null) {
+                        return client.getUser().getUsername().equals(username);
+                    }
+                    return false;
+                })
                 .orElse(false);
+    }
+
+    // Vérifier si l'utilisateur est ADMIN ou propriétaire de la réservation
+    public boolean isAdminOrOwner(Long reservationId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            return true;
+        }
+        return isReservationOwner(reservationId);
     }
 }

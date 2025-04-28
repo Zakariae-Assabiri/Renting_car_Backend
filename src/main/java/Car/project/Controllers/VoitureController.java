@@ -1,6 +1,6 @@
 package Car.project.Controllers;
 
-import Car.project.Entities.Client;
+import Car.project.Entities.Client; 
 import Car.project.Entities.Voiture;
 import Car.project.Services.VoitureService;
 import Car.project.dto.VoitureDTO;
@@ -24,10 +24,8 @@ public class VoitureController {
 
     @Autowired
     private VoitureService voitureService;
-
     // Créer une nouvelle voiture
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Voiture> createVoiture(@ModelAttribute VoitureDTO voitureDTO) {
         try {
             Voiture voiture = new Voiture();
@@ -85,17 +83,43 @@ public class VoitureController {
     }
 
     // Mettre à jour une voiture
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Voiture> updateVoiture(@PathVariable Long id,@RequestBody Voiture voiture) {
-    	voiture.setId(id); 
-    	Voiture updatedVoiture = voitureService.updateVoiture(voiture);
-        return ResponseEntity.ok(updatedVoiture);
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Voiture> updateVoiture(@PathVariable Long id, @ModelAttribute VoitureDTO voitureDTO) {
+        try {
+            Optional<Voiture> optionalVoiture = voitureService.getVoitureById(id);
+            if (optionalVoiture.isPresent()) {
+                Voiture voiture = optionalVoiture.get();
+                voiture.setVname(voitureDTO.getVname());
+                voiture.setCouleur(voitureDTO.getCouleur());
+                voiture.setMarque(voitureDTO.getMarque());
+                voiture.setMatricule(voitureDTO.getMatricule());
+                voiture.setModele(voitureDTO.getModele());
+                voiture.setCarburant(voitureDTO.getCarburant());
+                voiture.setCapacite(voitureDTO.getCapacite());
+                voiture.setType(voitureDTO.getType());
+                voiture.setPrixDeBase(voitureDTO.getPrixDeBase());
+                voiture.setEstAutomate(voitureDTO.getEstAutomate());
+
+                if (voitureDTO.getPhoto() != null && !voitureDTO.getPhoto().isEmpty()) {
+                    voiture.setPhoto(voitureDTO.getPhoto().getBytes());
+                }
+
+                Voiture updatedVoiture = voitureService.updateVoiture(voiture);
+                return new ResponseEntity<>(updatedVoiture, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
+
     // Supprimer une voiture
+    
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteVoiture(@PathVariable Long id) {
         voitureService.deleteVoiture(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

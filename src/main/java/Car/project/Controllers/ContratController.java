@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/contracts")
-@PreAuthorize("hasAuthority('ROLE_ADMIN') or @securityService.isReservationOwner(#reservationId)")
+
 public class ContratController {
 
     private final ContratService contractService;
@@ -18,9 +18,10 @@ public class ContratController {
     public ContratController(ContratService contractService) {
         this.contractService = contractService;
     }
-
+    @PreAuthorize("@securiteService.isAdminOrOwner(#reservationId)")
     @GetMapping("/{reservationId}/pdf")
     public ResponseEntity<byte[]> generateContractPdf(@PathVariable Long reservationId) {
+    	
         byte[] pdfContent = contractService.generatePdf(reservationId);
 
         HttpHeaders headers = new HttpHeaders();

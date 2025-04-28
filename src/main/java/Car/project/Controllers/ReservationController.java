@@ -21,15 +21,15 @@ public class ReservationController {
 
     // Créer une nouvelle réservation
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    @PreAuthorize("@securiteService.isAdminOrOwner(#Id)")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         Reservation newReservation = reservationService.createReservation(reservation);
         return new ResponseEntity<>(newReservation, HttpStatus.CREATED);
     }
 
     // Obtenir une réservation par son ID
+    @PreAuthorize("@securiteService.isAdminOrOwner(#Id)")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
         Optional<Reservation> reservation = reservationService.getReservationById(id);
         return reservation.map(ResponseEntity::ok)
@@ -38,15 +38,14 @@ public class ReservationController {
 
     // Obtenir toutes les réservations
     @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("@securiteService.isAdmin(#Id)")
     public List<Reservation> getAllReservations() {
         return reservationService.getAllReservations();
     }
 
     // Mettre à jour une réservation
- 
+    @PreAuthorize("@securiteService.isAdminOrOwner(#Id)")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Reservation> updateReservation(@PathVariable Long id,@RequestBody Reservation reservation) {
     	reservation.setId(id); 
     	Reservation updatedReservation = reservationService.updateReservation(reservation);
@@ -54,8 +53,8 @@ public class ReservationController {
     }
 
     // Supprimer une réservation
+    @PreAuthorize("@securiteService.isAdminOrOwner(#Id)")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         reservationService.deleteReservation(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

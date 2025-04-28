@@ -1,6 +1,9 @@
 package Car.project.Entities;
 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,4 +20,12 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(unique = true)
     private RoleNom nom;
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "role_permissions",
+        joinColumns = @JoinColumn(name = "role_id"),
+        inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    private Set<Permission> permissions = new HashSet<>();
 }

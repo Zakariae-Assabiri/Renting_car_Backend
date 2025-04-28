@@ -4,170 +4,254 @@
     <meta charset="UTF-8" />
     <title>Contrat de Location</title>
     <style>
-        /* Styles de base pour le contrat */
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
         body {
             font-family: Arial, sans-serif;
-            font-size: 14px;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
+            font-size: 11px;
+            color: #212121;
+            background: #FFFFFF;
         }
-
-        h1 {
+        .header {
             text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-            text-decoration: underline;
-        }
-
-        .section {
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
             margin-bottom: 10px;
-            text-decoration: underline;
         }
-
+        .header h1 {
+            font-size: 20px;
+            color: #D32F2F;
+            margin: 5px 0;
+        }
+        .company-info {
+            font-size: 10px;
+            margin-bottom: 10px;
+        }
+        .main {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+        .column {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+            padding: 5px;
+        }
+        h2 {
+            font-size: 13px;
+            color: #D32F2F;
+            border-bottom: 1px solid #D32F2F;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-top: 5px;
+            margin-bottom: 10px;
         }
-
-        table th, table td {
-            border: 1px solid #000;
-            padding: 8px;
+        th, td {
+            border: 1px solid #BDBDBD;
+            padding: 5px;
             text-align: left;
         }
-
-        table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
+        th {
+            background-color: #F5F5F5;
         }
-
-        .signature-section {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 40px;
-        }
-
-        .signature-box {
-            border: 1px solid #000;
-            height: 100px;
-            width: 200px;
-            margin-top: 10px;
-        }
-
         .footer {
+            margin-top: 30px;
+            font-size: 9px;
             text-align: center;
+            color: #999999;
+        }
+        .signature {
             margin-top: 40px;
-            font-size: 12px;
-            color: #555;
+            width: 100%;
+            display: table;
+        }
+        .signature div {
+            display: table-cell;
+            width: 50%;
+            text-align: center;
+            font-size: 10px;
+        }
+        .damage {
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- En-tête du contrat -->
-        <div class="header">
-            <h1>Contrat de Location</h1>
-            <p><strong>Adresse :</strong> 85, Rue Mly Ali Esherif, Tanger</p>
-            <p><strong>Email :</strong> Chezlauto@gmail.com</p>
-            <p><strong>Téléphone :</strong> 0606060616 / 0707013118</p>
-        </div>
 
-        <!-- Informations Locataire -->
-        <div class="section">
-            <div class="section-title">Informations Locataire</div>
-            <table>
-                <tr>
-                    <th>Nom</th>
-                    <td><span th:text="${cnom}">Ahmed</span></td>
-                </tr>
-                <tr>
-                    <th>Adresse</th>
-                    <td><span th:text="${cadresse}">18, Rue Lafan</span></td>
-                </tr>
-                <tr>
-                    <th>Nationalité</th>
-                    <td><span th:text="${cnationalite}">Marocain</span></td>
-                </tr>
-                <tr>
-                    <th>CIN</th>
-                    <td><span th:text="${ccin}">K163763</span></td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Informations Véhicule -->
-        <div class="section">
-            <div class="section-title">Informations Véhicule</div>
-            <table>
-                <tr>
-                    <th>Marque</th>
-                    <td><span th:text="${vmarque}">Dacia</span></td>
-                </tr>
-                <tr>
-                    <th>Matricule</th>
-                    <td><span th:text="${vmatricule}">40-B-4123</span></td>
-                </tr>
-                <tr>
-                    <th>Date de Départ</th>
-                    <td><span th:text="${vdepart}">2025-07-15T10:00</span></td>
-                </tr>
-                <tr>
-                    <th>Date de Retour</th>
-                    <td><span th:text="${vrendre}">2025-07-22T10:00</span></td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Informations Réservation -->
-        <div class="section">
-            <div class="section-title">Informations Réservation</div>
-            <table>
-                <tr>
-                    <th>Départ</th>
-                    <td><span th:text="${rdepart}">2025-07-15T10:00</span></td>
-                </tr>
-                <tr>
-                    <th>Retour Prévu</th>
-                    <td><span th:text="${rreturn}">2025-07-22T10:00</span></td>
-                </tr>
-                <tr>
-                    <th>Tarif Véhicule</th>
-                    <td><span th:text="${tarif}">500 MAD/jour</span></td>
-                </tr>
-                <tr>
-                    <th>Jours</th>
-                    <td><span th:text="${jours}">7</span></td>
-                </tr>
-                <tr>
-                    <th>Assurance</th>
-                    <td><span th:text="${assurance}">Oui</span></td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Signature Section -->
-        <div class="signature-section">
-            <div>
-                <p><strong>Signature Locataire :</strong></p>
-                <div class="signature-box"></div>
-            </div>
-            <div>
-                <p><strong>Signature Loueur :</strong></p>
-                <div class="signature-box"></div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <p>Merci de vérifier les détails avant de signer ce contrat.</p>
-        </div>
+<div class="header">
+    <h1>Rent a CAR</h1>
+    <div class="company-info">
+        <p>Adresse : N139 SECTEUR 6 LOT KORTOBA, Tanger</p>
+        <p>Email : assabiri.Zaka@gmail.com</p>
+        <p>Tél : 0600000000 / 0500000000</p>
     </div>
+</div>
+
+<div class="main">
+    <div class="column">
+        <h2>VÉHICULE</h2>
+        <table>
+            <tr>
+                <th>Marque</th>
+                <td th:text="${vmarque}"></td>
+            </tr>
+            <tr>
+                <th>Num immatriculation</th>
+                <td th:text="${vmatricule}"></td>
+            </tr>
+            <tr>
+                <th>Modèle</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>Carburant initial</th>
+                <td></td>
+            </tr>
+        </table>
+
+        <h2>LOCATAIRE</h2>
+        <table>
+            <tr>
+                <th>Nom  Prénom</th>
+                <td th:text="${cnom}"></td>
+            </tr>
+            <tr>
+                <th>Date de naissance</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td th:text="${cadresse}"></td>
+            </tr>
+            <tr>
+                <th>Ville</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>Permis de conduire</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>Délivré le</th>
+            </tr>
+            <tr>
+                <th>CIN / Passeport</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>Téléphone</th>
+                <td ></td>
+            </tr>
+        </table>
+
+        <h2>CONDUCTEUR SUPPLÉMENTAIRE</h2>
+        <table>
+            <tr>
+                <th>Nom  Prénom</th>
+                <td th:text="${cnom}"></td>
+            </tr>
+            <tr>
+                <th>Permis de conduire</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>Délivré le</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>CIN / Passeport</th>
+                <td ></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="column">
+        <h2>RÉSERVATION</h2>
+        <table>
+            <tr>
+                <th>Départ</th>
+                <td th:text="${#dates.format(vdepart, 'dd/MM/yyyy HH:mm')}"></td>
+            </tr>
+            <tr>
+                <th>Retour prévu</th>
+                <td th:text="${#dates.format(vrendre, 'dd/MM/yyyy HH:mm')}"></td>
+            </tr>
+            <tr>
+                <th>Retour définitif</th>
+                <td>__________</td>
+            </tr>
+        </table>
+
+        <h2>TARIFS</h2>
+        <table>
+            <tr>
+                <th>Tarif véhicule</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>Jours</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Assurance</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>Total général</th>
+                <td ></td>
+            </tr>
+        </table>
+
+        <h2>PAIEMENT</h2>
+        <table>
+            <tr>
+                <th>Type</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>Total payé</th>
+                <td ></td>
+            </tr>
+            <tr>
+                <th>Caution</th>
+                <td ></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="damage">
+    <p>Aucun dommage</p>
+</div>
+
+<div class="signature">
+    <div>
+        <p>Signature Locataire</p>
+        <br />
+        <br />
+        <br />
+    </div>
+    <div>
+        <p>Signature Loueur</p>
+        <br />
+        <br />
+        <br />
+    </div>
+</div>
+
+<div class="footer">
+    Fait le : <span th:text="${#dates.format(vdateCreation, 'dd/MM/yyyy')}"></span> - Ce contrat est généré automatiquement.
+</div>
+
 </body>
 </html>
