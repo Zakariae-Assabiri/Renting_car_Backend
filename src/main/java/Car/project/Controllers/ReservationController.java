@@ -21,13 +21,14 @@ public class ReservationController {
 
     // Créer une nouvelle réservation
     @PostMapping
+    @PreAuthorize("@securiteService.isAdminOrOwner(#Id)")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         Reservation newReservation = reservationService.createReservation(reservation);
         return new ResponseEntity<>(newReservation, HttpStatus.CREATED);
     }
 
     // Obtenir une réservation par son ID
-    @PreAuthorize("@securityService.isClientOwner(#id)")
+    @PreAuthorize("@securiteService.isAdminOrOwner(#Id)")
     @GetMapping("/{id}")
     public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
         Optional<Reservation> reservation = reservationService.getReservationById(id);
@@ -37,12 +38,13 @@ public class ReservationController {
 
     // Obtenir toutes les réservations
     @GetMapping
+    @PreAuthorize("@securiteService.isAdmin(#Id)")
     public List<Reservation> getAllReservations() {
         return reservationService.getAllReservations();
     }
 
     // Mettre à jour une réservation
-    @PreAuthorize("@securityService.isClientOwner(#id)")
+    @PreAuthorize("@securiteService.isAdminOrOwner(#Id)")
     @PutMapping("/{id}")
     public ResponseEntity<Reservation> updateReservation(@PathVariable Long id,@RequestBody Reservation reservation) {
     	reservation.setId(id); 
@@ -51,6 +53,7 @@ public class ReservationController {
     }
 
     // Supprimer une réservation
+    @PreAuthorize("@securiteService.isAdminOrOwner(#Id)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         reservationService.deleteReservation(id);

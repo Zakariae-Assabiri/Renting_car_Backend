@@ -2,6 +2,7 @@ package Car.project.Entities;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
@@ -32,18 +33,30 @@ public class User implements UserDetails {
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
     @Column(nullable = false)
     private boolean enabled = false;
+    @OneToOne(mappedBy = "user")
+    private Client client;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-            .flatMap(role -> role.getPermissions().stream())
-            .map(permission -> (GrantedAuthority) () -> permission.getEndpoint() + ":" + permission.getMethod())
-            .collect(Collectors.toSet());
+        Set<GrantedAuthority> authorities = new HashSet<>();
+
+        // Ajouter les rôles
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getNom().name())); // <- Correction ici
+
+            // Ajouter les permissions associées au rôle
+            authorities.addAll(
+                role.getPermissions().stream()
+                    .map(permission -> new SimpleGrantedAuthority(permission.getEndpoint() + ":" + permission.getMethod()))
+                    .collect(Collectors.toSet())
+            );
+        }
+
+        return authorities;
     }
-
-
 
     @Override
     public boolean isAccountNonExpired() {
@@ -62,6 +75,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-    	 return this.enabled;
+        return this.enabled;
     }
 }

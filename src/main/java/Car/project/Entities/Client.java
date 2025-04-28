@@ -4,7 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.PostLoad;
@@ -26,15 +28,15 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Identifiant unique du client
 
-    @NotBlank(message = "Le nom est obligatoire")
+
     @Size(max = 100, message = "Le nom ne peut pas dépasser 50 caractères")
     private String cname; // Nom du client
 
-    @NotBlank(message = "L'adresse est obligatoire")
+
     @Size(max = 100, message = "L'adresse ne peut pas dépasser 100 caractères")
     private String adresse; // Adresse du client
 
-    @NotBlank(message = "La nationalité est obligatoire")
+
     private String nationalite; // Nationalité du client
 
     @Size(max = 100, message = "L'adresse à l'étranger ne peut pas dépasser 100 caractères")
@@ -45,21 +47,23 @@ public class Client {
 
     private String delivreLePasseport; // Date de délivrance du passeport (optionnelle)
 
-    @NotBlank(message = "Le CIN est obligatoire")
+
     @Size(max = 100, message = "Le CIN ne peut pas dépasser 15 caractères")
     private String cin; // Numéro de CIN du client
 
     private String CinDelivreLe; // Date de délivrance du CIN (optionnelle)
 
-    @NotBlank(message = "Le téléphone est obligatoire")
+
     private String tel; // Numéro de téléphone du client
 
-    @NotBlank(message = "Le numéro de permis est obligatoire")
+
     private String permis; // Numéro de permis de conduire
 
     private String PermisDelivreLe; // Date de délivrance du permis (optionnelle)
     private String PermisDelivreAu; // Lieu de délivrance du permis (optionnelle)
-
+    @OneToOne
+    @JoinColumn(name = "user_id") // colonne dans la table client qui va référencer l'id de user
+    private User user;
     @Lob
     private byte[] photoCIN;
 

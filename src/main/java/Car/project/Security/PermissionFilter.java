@@ -18,9 +18,8 @@ public class PermissionFilter extends OncePerRequestFilter {
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    //  Définir les endpoints publics par (path, method)
+    // Définir les endpoints publics (path, method)
     private final List<PublicEndpoint> publicEndpoints = List.of(
-   
             new PublicEndpoint("/api/voitures/**", "GET"),
             new PublicEndpoint("/api/voitures/*/photo", "GET"),
             new PublicEndpoint("/api/auth/**", "ANY")
@@ -36,9 +35,9 @@ public class PermissionFilter extends OncePerRequestFilter {
         String requestMethod = request.getMethod(); // GET, POST, etc.
 
         boolean isPublic = publicEndpoints.stream()
-                .anyMatch(endpoint -> 
-                    pathMatcher.match(endpoint.getPath(), requestPath) &&
-                    (endpoint.getMethod().equalsIgnoreCase("ANY") || endpoint.getMethod().equalsIgnoreCase(requestMethod))
+                .anyMatch(endpoint ->
+                        pathMatcher.match(endpoint.getPath(), requestPath) &&
+                        (endpoint.getMethod().equalsIgnoreCase("ANY") || endpoint.getMethod().equalsIgnoreCase(requestMethod))
                 );
 
         if (isPublic) {
@@ -46,9 +45,33 @@ public class PermissionFilter extends OncePerRequestFilter {
             return;
         }
 
+        //  Bypass permission check for contract generation
+        if (pathMatcher.match("/api/contracts/**", requestPath)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        if (pathMatcher.match("/api/reservations/**", requestPath)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        if (pathMatcher.match("/api/clients/**", requestPath)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()) {
+            System.out.println("Authorities: " + authentication.getAuthorities());
+
+            boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+
+            if (isAdmin) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             boolean hasPermission = authentication.getAuthorities().stream()
                     .anyMatch(authority -> {
                         String[] parts = authority.getAuthority().split(":");

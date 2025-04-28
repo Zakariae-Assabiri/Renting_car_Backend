@@ -19,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/clients")
+
 public class ClientController {
 
     @Autowired
@@ -60,7 +61,7 @@ public class ClientController {
 
 
     // Obtenir un client par ID
-    @PreAuthorize("@securityService.isClientOwner(#id)")
+    @PreAuthorize("@securiteService.isAdminOrOwner(#Id)")
     @GetMapping("/{id}")
     public ResponseEntity<Client> getClientById(@PathVariable Long id) {
         Optional<Client> client = clientService.getClientById(id);
@@ -69,6 +70,7 @@ public class ClientController {
     }
 
     // Obtenir la liste de tous les clients
+    @PreAuthorize("@securiteService.isAdmin(#Id)")
     @GetMapping
     public ResponseEntity<List<Client>> getAllClients() {
         List<Client> clients = clientService.getAllClients();
@@ -76,9 +78,9 @@ public class ClientController {
     }
 
     // Mettre à jour un client 
-    
+    @PreAuthorize("@securiteService.isAdmin(#Id)")
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("@securityService.isClientOwner(#id)")
+    
     public ResponseEntity<Client> updateClient(@PathVariable Long id, @ModelAttribute ClientDTO clientDTO) {
         try {
             Optional<Client> optionalClient = clientService.getClientById(id);
@@ -117,6 +119,7 @@ public class ClientController {
     }
 
     // Supprimer un client
+    @PreAuthorize("@securiteService.isAdmin(#Id)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         Optional<Client> clientOptional = clientService.getClientById(id);
