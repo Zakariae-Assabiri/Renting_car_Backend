@@ -73,6 +73,21 @@ public class ClientService {
         return clientRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("error.client.notfound"));
     }
+    public byte[] getClientCinPhotoById(Long id) {
+        Client client = findClientEntityById(id);
+        if (client.getPhotoCIN() == null) {
+            throw new EntityNotFoundException("error.client.photocin.notfound");
+        }
+        return client.getPhotoCIN();
+    }
+
+    public byte[] getClientPermisPhotoById(Long id) {
+        Client client = findClientEntityById(id);
+        if (client.getPhotoPermis() == null) {
+            throw new EntityNotFoundException("error.client.photopermis.notfound");
+        }
+        return client.getPhotoPermis();
+    }
 
     /**
      * Méthode d'aide pour mapper un DTO de requête vers une entité Client.

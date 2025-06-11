@@ -50,10 +50,9 @@ public class VoitureController {
      */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<VoitureDetailDTO> createVoiture(@Valid @ModelAttribute VoitureDTO voitureDto) throws IOException {
-        VoitureDetailDTO createdVoitureDto = voitureService.createVoiture(voitureDto);
-
-        return new ResponseEntity<VoitureDetailDTO>(createdVoitureDto, HttpStatus.CREATED);
+    public ResponseEntity<VoitureDetailDTO> createVoiture(@Valid @ModelAttribute VoitureDTO voitureRequestDto) throws IOException {
+        VoitureDetailDTO createdVoitureDto = voitureService.createVoiture(voitureRequestDto);
+        return new ResponseEntity<>(createdVoitureDto, HttpStatus.CREATED);
     }
 
     /**

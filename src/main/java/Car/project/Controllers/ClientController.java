@@ -6,6 +6,7 @@ import Car.project.Services.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,17 @@ public class ClientController {
     public ResponseEntity<ClientDetailDTO> getClientById(@PathVariable Long id) {
         ClientDetailDTO clientDto = clientService.getClientDtoById(id);
         return ResponseEntity.ok(clientDto);
+    }
+    @GetMapping("/{id}/photo-cin")
+    public ResponseEntity<byte[]> getClientCinPhoto(@PathVariable Long id) {
+        byte[] photoBytes = clientService.getClientCinPhotoById(id);
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(photoBytes);
+    }
+
+    @GetMapping("/{id}/photo-permis")
+    public ResponseEntity<byte[]> getClientPermisPhoto(@PathVariable Long id) {
+        byte[] photoBytes = clientService.getClientPermisPhotoById(id);
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(photoBytes);
     }
 
     @PostMapping

@@ -84,6 +84,18 @@ public class VoitureService {
         return voitureRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("error.voiture.notfound"));
     }
+    
+    public byte[] getVoiturePhoto(Long id) {
+        // On réutilise notre méthode privée pour trouver l'entité
+        Voiture voiture = findVoitureEntityById(id);
+        
+        // On vérifie si la photo existe
+        if (voiture.getPhoto() == null) {
+            throw new EntityNotFoundException("error.voiture.photo.notfound");
+        }
+        
+        return voiture.getPhoto();
+    }
 
     private void mapDtoToEntity(VoitureDTO dto, Voiture voiture) throws IOException {
         voiture.setVname(dto.getVname());
