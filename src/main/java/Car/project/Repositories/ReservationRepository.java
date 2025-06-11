@@ -7,9 +7,12 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Set;
 import Car.project.Entities.Reservation;
+import Car.project.Entities.Voiture;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
+	List<Reservation> findByClientId(Long clientId);
+	
     // Récupère toutes les réservations qui chevauchent une période donnée pour un véhicule spécifique.
     @Query("SELECT r FROM Reservation r WHERE r.voiture.id = :voitureId AND r.dateDebut < :dateFin AND r.dateFin > :dateDebut AND r.statut <> 'Annulée'")
     List<Reservation> findReservationsOverlappingForVoiture(
@@ -40,7 +43,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     int countReservedCarsInPeriod(
         @Param("dateDebut") LocalDateTime dateDebut, 
         @Param("dateFin") LocalDateTime dateFin);
-    
+    boolean existsByVoitureAndDateFinAfter(Voiture voiture, LocalDateTime date);
     // Compte le nombre de voitures réservées dans une période donnée (les Confirmée).
     @Query("SELECT SUM(r.montantTotal) FROM Reservation r WHERE r.statut = 'Confirmée' AND r.dateDebut >= :dateDebut AND r.dateFin <= :dateFin")
     Double sumMontantTotalConfirmedByPeriod(
