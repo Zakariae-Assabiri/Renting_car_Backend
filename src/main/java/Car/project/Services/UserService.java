@@ -80,9 +80,12 @@ public class UserService {
 
         //  Maintenant, création automatique du Client lié au User
         Client client = new Client();
-        client.setCname(registerRequest.getUsername()); // Ou demande dans RegisterRequest le vrai nom complet
-        client.setAdresse("Adresse par défaut"); // Ou une vraie adresse récupérée
-        client.setTel("0000000000"); // Ou un champ dans ton RegisterRequest
+        client.setCname(registerRequest.getUsername()); 
+        client.setAdresse("Adresse par défaut"); 
+        client.setNationalite("Nationalité"); 
+        client.setCin("CIN"); 
+        client.setTel("0000000000"); 
+        client.setPermis("Permis");
 
         client.setUser(user); // très important
         clientRepository.save(client);

@@ -23,13 +23,9 @@ public class ClientDTO {
     private String tel;
     @NotBlank(message = "error.client.permis.notblank") 
     private String permis;
-    @NotBlank(message = "error.client.permisDelivreLe.notblank") 
     private String permisDelivreLe;
-    @NotBlank(message = "error.client.permisDelivreAu.notblank") 
-    private String permisDelivreAu;
-    @NotBlank(message = "error.client.photoCIN.notblank") 
+    private String permisDelivreAu; 
     private MultipartFile photoCIN;
-    @NotBlank(message = "error.client.photoPermis.notblank") 
     private MultipartFile photoPermis;
 
 }
