@@ -39,6 +39,13 @@ public class ReservationController {
         List<ReservationResponseDTO> reservations = reservationService.findReservationsByClientId(clientId);
         return ResponseEntity.ok(reservations);
     }
+    @GetMapping("/client/{UserId}")
+    @PreAuthorize("hasRole('ADMIN') or @securiteService.isOwner(#UserId)")
+    public ResponseEntity<List<ReservationResponseDTO>> findReservationsByUserId(@PathVariable Long userId) {
+        List<ReservationResponseDTO> reservations = reservationService.findReservationsByClientId(userId);
+        return ResponseEntity.ok(reservations);
+    }
+
 
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

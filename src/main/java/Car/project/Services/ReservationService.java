@@ -81,12 +81,7 @@ public class ReservationService {
         Reservation savedReservation = reservationRepository.save(reservation);
         return mapToReservationResponseDTO(savedReservation);
     }
-    /**
-     * Trouve toutes les réservations pour un client donné.
-     * @param clientId L'identifiant du client.
-     * @return Une liste de ReservationResponseDTO.
-     * @throws EntityNotFoundException si le client n'existe pas.
-     */
+
     public List<ReservationResponseDTO> findReservationsByClientId(Long clientId) {
         // Règle métier : On vérifie d'abord que le client existe.
         // Cela lance une erreur 404 propre si l'ID est invalide.
@@ -100,6 +95,20 @@ public class ReservationService {
                 .map(this::mapToReservationResponseDTO)
                 .collect(Collectors.toList());
     }
+    
+    public List<ReservationResponseDTO> findReservationsByUserId(Long UserId) {
+        // Vérifie si le client existe, sinon déclenche une exception 404
+        clientService.findClientEntityById(UserId);
+
+        // Récupère les réservations liées à ce client
+        List<Reservation> reservations = reservationRepository.findByUserId(UserId);
+
+        // Convertit les entités en DTOs et retourne la liste
+        return reservations.stream()
+                .map(this::mapToReservationResponseDTO)
+                .collect(Collectors.toList());
+    }
+
     public void deleteReservation(Long id) {
         if (!reservationRepository.existsById(id)) {
             throw new EntityNotFoundException("error.reservation.notfound");

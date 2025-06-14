@@ -87,6 +87,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     
     @Query(value = "SELECT AVG(DATEDIFF(date_fin, date_debut)) FROM reservation", nativeQuery = true)
     Double findDureeMoyenne();
+    List<Reservation> findByUserId(Long UserId);
 
     
     @Query("SELECT r.dateDebut, r.dateFin FROM Reservation r")
