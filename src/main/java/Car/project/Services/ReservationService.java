@@ -10,6 +10,8 @@ import Car.project.dto.ReservationRequestDTO;
 import Car.project.dto.ReservationResponseDTO;
 import Car.project.dto.VoitureDetailDTO;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,18 +31,18 @@ public class ReservationService {
     private ClientService clientService; // <-- Injection nécessaire
 
     // --- Méthodes publiques pour le contrôleur ---
-
+    @Transactional
     public List<ReservationResponseDTO> getAllReservationsDto() {
         return reservationRepository.findAll().stream()
                 .map(this::mapToReservationResponseDTO)
                 .collect(Collectors.toList());
     }
-
+    @Transactional
     public ReservationResponseDTO getReservationDtoById(Long id) {
         Reservation reservation = findEntityById(id);
         return mapToReservationResponseDTO(reservation);
     }
-
+    @Transactional
     public ReservationResponseDTO createReservation(ReservationRequestDTO dto) {
         // Règle métier 1 : Valider les dates
         if (dto.getDateDebut().isAfter(dto.getDateFin())) {
@@ -87,6 +89,7 @@ public class ReservationService {
      * @return Une liste de ReservationResponseDTO.
      * @throws EntityNotFoundException si le client n'existe pas.
      */
+    @Transactional
     public List<ReservationResponseDTO> findReservationsByClientId(Long clientId) {
         // Règle métier : On vérifie d'abord que le client existe.
         // Cela lance une erreur 404 propre si l'ID est invalide.
@@ -129,5 +132,9 @@ public class ReservationService {
         dto.setStatut(reservation.getStatut());
         // ... etc ...
         return dto;
+    }
+    @Transactional
+    public List<Reservation> getReservationsByUserId(Long userId) {
+        return reservationRepository.findReservationsByUserId(userId);
     }
 }

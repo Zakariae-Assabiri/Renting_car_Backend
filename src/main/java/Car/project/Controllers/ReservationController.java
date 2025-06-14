@@ -2,6 +2,7 @@ package Car.project.Controllers;
 
 import Car.project.dto.ReservationRequestDTO;
 import Car.project.dto.ReservationResponseDTO;
+import Car.project.Entities.Reservation;
 import Car.project.Services.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +34,12 @@ public class ReservationController {
         return ResponseEntity.ok(reservationDto);
     }
     
-    @GetMapping("/client/{clientId}")
-    @PreAuthorize("hasRole('ADMIN') or @securiteService.isOwner(#clientId)")
-    public ResponseEntity<List<ReservationResponseDTO>> getReservationsByClient(@PathVariable Long clientId) {
-        List<ReservationResponseDTO> reservations = reservationService.findReservationsByClientId(clientId);
+    @GetMapping("/client/{userId}")
+    public ResponseEntity<List<Reservation>> getReservationsByUserId(@PathVariable Long userId) {
+        List<Reservation> reservations = reservationService.getReservationsByUserId(userId);
+        if (reservations.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(reservations);
     }
 

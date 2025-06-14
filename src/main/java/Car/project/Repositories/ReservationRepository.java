@@ -91,4 +91,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     
     @Query("SELECT r.dateDebut, r.dateFin FROM Reservation r")
     List<Object[]> findDatesDebutEtFin();
+    
+    @Query("SELECT r FROM Reservation r WHERE r.client.user.id = :userId")
+    List<Reservation> findReservationsByUserId(@Param("userId") Long userId);
 }

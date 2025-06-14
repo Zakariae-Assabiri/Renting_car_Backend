@@ -114,4 +114,10 @@ public class Client {
     	    }
     	}
 
+
+	public Client orElseThrow(Object object) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
     }
