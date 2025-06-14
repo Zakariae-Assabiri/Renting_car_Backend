@@ -115,7 +115,7 @@ public class ReservationService {
 
     // --- Méthodes internes et de mapping ---
 
-    private Reservation findEntityById(Long id) {
+    public Reservation findEntityById(Long id) {
         return reservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("error.reservation.notfound"));
     }
