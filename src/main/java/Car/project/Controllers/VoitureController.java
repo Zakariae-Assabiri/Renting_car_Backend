@@ -1,137 +1,105 @@
 package Car.project.Controllers;
 
-import Car.project.Entities.Client; 
-import Car.project.Entities.Voiture;
-import Car.project.Services.VoitureService;
+import Car.project.dto.VoitureDetailDTO;
 import Car.project.dto.VoitureDTO;
-
+import Car.project.Services.VoitureService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.MediaType;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("api/voitures")
+@CrossOrigin(origins = "http://localhost:4200") // Gardez cette ligne si vous en avez besoin pour votre frontend
+@RequestMapping("/api/voitures")
 public class VoitureController {
 
     @Autowired
     private VoitureService voitureService;
-    // Créer une nouvelle voiture
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Voiture> createVoiture(@ModelAttribute VoitureDTO voitureDTO) {
-        try {
-            Voiture voiture = new Voiture();
-            voiture.setVname(voitureDTO.getVname());
-            voiture.setCouleur(voitureDTO.getCouleur());
-            voiture.setMarque(voitureDTO.getMarque());
-            voiture.setMatricule(voitureDTO.getMatricule());
-            voiture.setModele(voitureDTO.getModele());
-            voiture.setCarburant(voitureDTO.getCarburant());
-            voiture.setCapacite(voitureDTO.getCapacite());
-            voiture.setType(voitureDTO.getType());
-            voiture.setPrixDeBase(voitureDTO.getPrixDeBase());
-            voiture.setEstAutomate(voitureDTO.getEstAutomate());
 
-            if (voitureDTO.getPhoto() != null && !voitureDTO.getPhoto().isEmpty()) {
-                voiture.setPhoto(voitureDTO.getPhoto().getBytes());
-            }
-
-            Voiture savedVoiture = voitureService.createVoiture(voiture);
-            return new ResponseEntity<>(savedVoiture, HttpStatus.CREATED);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    
-    @GetMapping("/{id}/photo")
-    public ResponseEntity<byte[]> getVoiturePhoto(@PathVariable Long id) {
-        Optional<Voiture> voiture = voitureService.getVoitureById(id);
-        if (voiture.isPresent() && voiture.get().getPhoto() != null) {
-            return ResponseEntity
-                    .ok()
-                    .header("Content-Type", "image/jpeg")  // tu peux adapter selon le type réel
-                    .body(voiture.get().getPhoto());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-
-    // Obtenir une voiture par son ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Voiture> getVoitureById(@PathVariable Long id) {
-        Optional<Voiture> voiture = voitureService.getVoitureById(id);
-        return voiture.map(ResponseEntity::ok)
-                      .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    // Obtenir toutes les voitures
+    /**
+     * Obtenir toutes les voitures. Retourne une liste de DTOs.
+     */
     @GetMapping
-    public List<Voiture> getAllVoitures() {
-        return voitureService.getAllVoitures();
+    public ResponseEntity<List<VoitureDetailDTO>> getAllVoitures() {
+        List<VoitureDetailDTO> voitures = voitureService.getAllVoituresDto();
+        return ResponseEntity.ok(voitures);
     }
 
-    // Mettre à jour une voiture
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Voiture> updateVoiture(@PathVariable Long id, @ModelAttribute VoitureDTO voitureDTO) {
-        try {
-            Optional<Voiture> optionalVoiture = voitureService.getVoitureById(id);
-            if (optionalVoiture.isPresent()) {
-                Voiture voiture = optionalVoiture.get();
-                voiture.setVname(voitureDTO.getVname());
-                voiture.setCouleur(voitureDTO.getCouleur());
-                voiture.setMarque(voitureDTO.getMarque());
-                voiture.setMatricule(voitureDTO.getMatricule());
-                voiture.setModele(voitureDTO.getModele());
-                voiture.setCarburant(voitureDTO.getCarburant());
-                voiture.setCapacite(voitureDTO.getCapacite());
-                voiture.setType(voitureDTO.getType());
-                voiture.setPrixDeBase(voitureDTO.getPrixDeBase());
-                voiture.setEstAutomate(voitureDTO.getEstAutomate());
-
-                if (voitureDTO.getPhoto() != null && !voitureDTO.getPhoto().isEmpty()) {
-                    voiture.setPhoto(voitureDTO.getPhoto().getBytes());
-                }
-
-                Voiture updatedVoiture = voitureService.updateVoiture(voiture);
-                return new ResponseEntity<>(updatedVoiture, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    /**
+     * Obtenir une voiture par son ID. Retourne un DTO de détail.
+     * La gestion de l'erreur "Not Found" est déléguée au service et au GlobalExceptionHandler.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<VoitureDetailDTO> getVoitureById(@PathVariable Long id) {
+        VoitureDetailDTO voitureDto = voitureService.getVoitureDtoById(id);
+        return ResponseEntity.ok(voitureDto);
     }
 
+    /**
+     * Créer une nouvelle voiture.
+     * Accepte un formulaire multipart (données + fichier), valide les données,
+     * et délègue la création au service.
+     */
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<VoitureDetailDTO> createVoiture(@Valid @ModelAttribute VoitureDTO voitureRequestDto) throws IOException {
+        VoitureDetailDTO createdVoitureDto = voitureService.createVoiture(voitureRequestDto);
+        return new ResponseEntity<>(createdVoitureDto, HttpStatus.CREATED);
+    }
 
-    // Supprimer une voiture
-    
+    /**
+     * Mettre à jour une voiture existante.
+     */
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<VoitureDetailDTO> updateVoiture(@PathVariable Long id, @Valid @ModelAttribute VoitureDTO voitureRequestDto) throws IOException {
+        VoitureDetailDTO updatedVoitureDto = voitureService.updateVoiture(id, voitureRequestDto);
+        return ResponseEntity.ok(updatedVoitureDto);
+    }
+
+    /**
+     * Supprimer une voiture.
+     * La gestion des erreurs (Not Found, voiture avec réservations) est déléguée au service.
+     */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteVoiture(@PathVariable Long id) {
         voitureService.deleteVoiture(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // Trouver les voitures disponibles entre deux dates
+    /**
+     * Endpoint spécial pour récupérer uniquement la photo d'une voiture.
+     * Utile pour afficher des images sans charger toutes les autres données.
+     */
+    @GetMapping("/{id}/photo")
+    public ResponseEntity<byte[]> getVoiturePhoto(@PathVariable Long id) {
+        // Il faut ajouter la méthode getVoiturePhotoById au service
+        byte[] photoBytes = voitureService.findVoitureEntityById(id).getPhoto();
+        if (photoBytes != null) {
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(photoBytes);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Trouver les voitures disponibles entre deux dates.
+     * L'annotation @DateTimeFormat aide Spring à comprendre le format des dates envoyées par le client.
+     */
     @GetMapping("/disponibles")
-    public ResponseEntity<List<Voiture>> getVoituresDisponibles(
-            @RequestParam("dateDebut") LocalDateTime dateDebut,
-            @RequestParam("dateFin") LocalDateTime dateFin) {
-        
-        List<Voiture> voituresDisponibles = voitureService.trouverVoituresDisponibles(dateDebut, dateFin);
+    public ResponseEntity<List<VoitureDetailDTO>> getVoituresDisponibles(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateDebut,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFin) {
+        List<VoitureDetailDTO> voituresDisponibles = voitureService.findVoituresDisponiblesDto(dateDebut, dateFin);
         return ResponseEntity.ok(voituresDisponibles);
     }
 }

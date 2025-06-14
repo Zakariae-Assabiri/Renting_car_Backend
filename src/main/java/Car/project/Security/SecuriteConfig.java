@@ -4,6 +4,7 @@ import Car.project.Security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -19,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.util.List;
 
 @Configuration
-@EnableMethodSecurity // Active @PreAuthorize et @Secured
+@EnableMethodSecurity 
 @RequiredArgsConstructor
 public class SecuriteConfig {
 
@@ -43,6 +44,7 @@ public class SecuriteConfig {
                     "/api/permissions/**",
                     "/api/roles/**"
                 ).permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/voitures").permitAll()
                 .anyRequest().authenticated() // Toutes les autres routes doivent passer par PermissionFilter
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

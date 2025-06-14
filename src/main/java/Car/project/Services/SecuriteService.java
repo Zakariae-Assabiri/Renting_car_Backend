@@ -58,4 +58,10 @@ public class SecuriteService {
         }
         return isReservationOwner(reservationId);
     }
+ // Vérifier si l'utilisateur est ADMIN
+    public boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+    }
 }

@@ -1,17 +1,18 @@
 package Car.project.Services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import Car.project.Entities.Reservation;
 import Car.project.Entities.Voiture;
 import Car.project.Repositories.ReservationRepository;
 import Car.project.Repositories.VoitureRepository;
+import Car.project.dto.VoitureDetailDTO;
+import Car.project.dto.VoitureDTO;
+import Car.project.exception.ResourceAlreadyExistsException;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,45 +24,109 @@ public class VoitureService {
     @Autowired
     private ReservationRepository reservationRepository;
 
-    // Créer une voiture
-    public Voiture createVoiture(Voiture voiture) {
-        return voitureRepository.save(voiture);
+    // --- Méthodes publiques pour le contrôleur ---
+
+    public List<VoitureDetailDTO> getAllVoituresDto() {
+        return voitureRepository.findAll().stream()
+                .map(this::mapToVoitureDetailDTO)
+                .collect(Collectors.toList());
     }
 
-    // Obtenir une voiture par son ID
-    public Optional<Voiture> getVoitureById(Long id) {
-        return voitureRepository.findById(id);
+    public VoitureDetailDTO getVoitureDtoById(Long id) {
+        Voiture voiture = findVoitureEntityById(id);
+        return mapToVoitureDetailDTO(voiture);
     }
 
-    // Obtenir toutes les voitures
-    public List<Voiture> getAllVoitures() {
-        return voitureRepository.findAll();
-    }
-
-    // Mettre à jour une voiture
-    public Voiture updateVoiture(Voiture voiture) {
-        return voitureRepository.save(voiture);
-    }
-
-    // Supprimer une voiture
-    public void deleteVoiture(Long id) {
-        voitureRepository.deleteById(id);
-    }
-
-    // Trouver les voitures disponibles entre deux dates
-    public List<Voiture> trouverVoituresDisponibles(LocalDateTime dateDebut, LocalDateTime dateFin) {
-        // Vérifier que la date de début est avant la date de fin
-        if (dateDebut.isAfter(dateFin)) {
-            throw new IllegalArgumentException("La date de début doit être avant la date de fin.");
+    public VoitureDetailDTO createVoiture(VoitureDTO dto) throws IOException {
+        if (voitureRepository.existsByMatricule(dto.getMatricule())) {
+            throw new ResourceAlreadyExistsException("error.voiture.matricule.exists");
         }
 
-        // Récupérer les IDs des voitures réservées pendant la période
-        Set<Long> voituresReserveesIds = reservationRepository.findVoituresReserveesIds(dateDebut, dateFin);
+        Voiture voiture = new Voiture();
+        mapDtoToEntity(dto, voiture);
 
-        // Récupérer toutes les voitures non réservées
-        return voitureRepository.findAll()
-            .stream()
-            .filter(voiture -> !voituresReserveesIds.contains(voiture.getId()))
-            .collect(Collectors.toList());
+        Voiture savedVoiture = voitureRepository.save(voiture);
+        return mapToVoitureDetailDTO(savedVoiture);
+    }
+
+    public VoitureDetailDTO updateVoiture(Long id, VoitureDTO dto) throws IOException {
+        Voiture existingVoiture = findVoitureEntityById(id);
+        mapDtoToEntity(dto, existingVoiture);
+
+        Voiture updatedVoiture = voitureRepository.save(existingVoiture);
+        return mapToVoitureDetailDTO(updatedVoiture);
+    }
+
+    public void deleteVoiture(Long id) {
+        Voiture voiture = findVoitureEntityById(id);
+        
+        // Règle métier : On ne peut pas supprimer une voiture si elle a des réservations futures
+        if (reservationRepository.existsByVoitureAndDateFinAfter(voiture, LocalDateTime.now())) {
+            throw new IllegalStateException("error.voiture.delete.hasreservations");
+        }
+
+        voitureRepository.delete(voiture);
+    }
+
+    public List<VoitureDetailDTO> findVoituresDisponiblesDto(LocalDateTime dateDebut, LocalDateTime dateFin) {
+        if (dateDebut.isAfter(dateFin)) {
+            throw new IllegalArgumentException("error.dates.invalid");
+        }
+        List<Voiture> voituresDisponibles = voitureRepository.findVoituresDisponibles(dateDebut, dateFin);
+        return voituresDisponibles.stream()
+                .map(this::mapToVoitureDetailDTO)
+                .collect(Collectors.toList());
+    }
+    
+    // --- Méthodes internes et de mapping ---
+
+    public Voiture findVoitureEntityById(Long id) {
+        return voitureRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("error.voiture.notfound"));
+    }
+    
+    public byte[] getVoiturePhoto(Long id) {
+        // On réutilise notre méthode privée pour trouver l'entité
+        Voiture voiture = findVoitureEntityById(id);
+        
+        // On vérifie si la photo existe
+        if (voiture.getPhoto() == null) {
+            throw new EntityNotFoundException("error.voiture.photo.notfound");
+        }
+        
+        return voiture.getPhoto();
+    }
+
+    private void mapDtoToEntity(VoitureDTO dto, Voiture voiture) throws IOException {
+        voiture.setVname(dto.getVname());
+        voiture.setMarque(dto.getMarque());
+        voiture.setMatricule(dto.getMatricule());
+        voiture.setModele(dto.getModele());
+        voiture.setPrixDeBase(dto.getPrixDeBase());
+        voiture.setCouleur(dto.getCouleur());
+        voiture.setCarburant(dto.getCarburant());
+        voiture.setCapacite(dto.getCapacite());
+        voiture.setType(dto.getType());
+        voiture.setEstAutomate(dto.getEstAutomate());
+
+        if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
+            voiture.setPhoto(dto.getPhoto().getBytes());
+        }
+    }
+
+    private VoitureDetailDTO mapToVoitureDetailDTO(Voiture voiture) {
+        VoitureDetailDTO dto = new VoitureDetailDTO();
+        dto.setId(voiture.getId());
+        dto.setVname(voiture.getVname());
+        dto.setMarque(voiture.getMarque());
+        dto.setMatricule(voiture.getMatricule());
+        dto.setModele(voiture.getModele());
+        dto.setPrixDeBase(voiture.getPrixDeBase());
+        dto.setCouleur(voiture.getCouleur());
+        dto.setCarburant(voiture.getCarburant());
+        dto.setCapacite(voiture.getCapacite());
+        dto.setType(voiture.getType());
+        dto.setEstAutomate(voiture.getEstAutomate());
+        return dto;
     }
 }
