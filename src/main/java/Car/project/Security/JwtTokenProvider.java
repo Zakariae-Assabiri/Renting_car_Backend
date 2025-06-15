@@ -21,7 +21,8 @@ public class JwtTokenProvider {
     	 Map<String, Object> claims = Map.of(
     		        "authorities", user.getRoles().stream()
     		            .map(role -> role.getNom().name()) // Exemple : "ROLE_ADMIN"
-    		            .collect(Collectors.toList())
+    		            .collect(Collectors.toList()),
+    		            "user_id", user.getId() 
     		    );
         return Jwts.builder()
         		.setClaims(claims)
