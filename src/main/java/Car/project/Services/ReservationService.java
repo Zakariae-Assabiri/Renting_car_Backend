@@ -119,7 +119,41 @@ public class ReservationService {
         return reservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("error.reservation.notfound"));
     }
-    
+    private VoitureDetailDTO mapToVoitureDetailDTO(Voiture voiture) {
+        if (voiture == null) return null;
+        VoitureDetailDTO dto = new VoitureDetailDTO();
+        dto.setId(voiture.getId());
+        dto.setVname(voiture.getVname());
+        dto.setCouleur(voiture.getCouleur());
+        dto.setMarque(voiture.getMarque());
+        dto.setMatricule(voiture.getMatricule());
+        dto.setModele(voiture.getModele());
+        dto.setCarburant(voiture.getCarburant());
+        dto.setCapacite(voiture.getCapacite());
+        dto.setType(voiture.getType());
+        dto.setPrixDeBase(voiture.getPrixDeBase());
+        dto.setEstAutomate(voiture.getEstAutomate());
+        return dto;
+    }
+    private ClientDetailDTO mapToClientDetailDTO(Client client) {
+        if (client == null) return null;
+        ClientDetailDTO dto = new ClientDetailDTO();
+        dto.setId(client.getId());
+        dto.setCname(client.getCname());
+        dto.setAdresse(client.getAdresse());
+        dto.setNationalite(client.getNationalite());
+        dto.setAdresseEtranger(client.getAdresseEtranger());
+        dto.setPasseport(client.getPasseport());
+        dto.setDelivreLePasseport(client.getDelivreLePasseport());
+        dto.setCin(client.getCin());
+        dto.setCinDelivreLe(client.getCinDelivreLe());
+        dto.setTel(client.getTel());
+        dto.setPermis(client.getPermis());
+        dto.setPermisDelivreLe(client.getPermisDelivreLe());
+        dto.setPermisDelivreAu(client.getPermisDelivreAu());
+        return dto;
+    }
+
     // Le mapping reste ici, car ce service est le seul à connaître la structure d'une ReservationResponseDTO
     private ReservationResponseDTO mapToReservationResponseDTO(Reservation reservation) {
         // ... (logique de mapping vers DTO de réponse) ...
@@ -130,7 +164,10 @@ public class ReservationService {
         dto.setMontantTotal(reservation.getMontantTotal());
         dto.setAcompte(reservation.getAcompte());
         dto.setStatut(reservation.getStatut());
-        // ... etc ...
+        dto.setVoiture(mapToVoitureDetailDTO(reservation.getVoiture()));
+        dto.setClient(mapToClientDetailDTO(reservation.getClient()));
+        dto.setConducteurSecondaire(mapToClientDetailDTO(reservation.getConducteurSecondaire()));
+
         return dto;
     }
     @Transactional
