@@ -34,6 +34,11 @@ public class ReservationController {
         return ResponseEntity.ok(reservationDto);
     }
     
+    @PutMapping("/{id}")
+    public ReservationResponseDTO updateReservation(@PathVariable Long id, @Valid @RequestBody ReservationRequestDTO dto) {
+        return reservationService.updateReservation(id, dto);
+    }
+    
     @GetMapping("/client/{userId}")
     public ResponseEntity<List<Reservation>> getReservationsByUserId(@PathVariable Long userId) {
         List<Reservation> reservations = reservationService.getReservationsByUserId(userId);

@@ -33,7 +33,6 @@ public class Voiture {
     private String marque; // Marque de la voiture
 
     @NotBlank(message = "La matricule est obligatoire")
-    @Size(max = 10, message = "La matricule ne peut pas dépasser 10 caractères")
     private String matricule; // Matricule de la voiture
 
     @NotBlank(message = "Le modèle est obligatoire")

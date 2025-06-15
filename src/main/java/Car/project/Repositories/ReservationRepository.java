@@ -94,4 +94,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     
     @Query("SELECT r FROM Reservation r WHERE r.client.user.id = :userId")
     List<Reservation> findReservationsByUserId(@Param("userId") Long userId);
+    
+    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END " +
+            "FROM Reservation r " +
+            "WHERE r.voiture.id = :voitureId " +
+            "AND r.id <> :currentReservationId " +
+            "AND (r.dateDebut < :dateFin AND r.dateFin > :dateDebut)")
+     boolean isVoitureAlreadyReservedForOther(Long voitureId, LocalDateTime dateDebut, LocalDateTime dateFin, Long currentReservationId);
 }

@@ -174,4 +174,57 @@ public class ReservationService {
     public List<Reservation> getReservationsByUserId(Long userId) {
         return reservationRepository.findReservationsByUserId(userId);
     }
+    
+    @Transactional
+    public ReservationResponseDTO updateReservation(Long id, ReservationRequestDTO dto) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("error.reservation.notfound"));
+
+        // Valider les dates
+        if (dto.getDateDebut().isAfter(dto.getDateFin())) {
+            throw new IllegalArgumentException("error.dates.invalid");
+        }
+
+        // Vérifier la disponibilité de la voiture (en excluant cette réservation)
+        List<Voiture> voituresDisponibles = voitureRepository.findVoituresDisponibles(dto.getDateDebut(), dto.getDateFin())
+                .stream()
+                .filter(v -> v.getId().equals(dto.getVoitureId()) || !isVoitureAlreadyReservedForOther(dto.getVoitureId(), dto.getDateDebut(), dto.getDateFin(), id))
+                .collect(Collectors.toList());
+
+        boolean isVoitureDisponible = voituresDisponibles.stream()
+                .anyMatch(v -> v.getId().equals(dto.getVoitureId()));
+
+        if (!isVoitureDisponible) {
+            throw new IllegalStateException("error.reservation.voiture.notavailable");
+        }
+
+        // Récupération des entités liées
+        Voiture voiture = voitureRepository.findById(dto.getVoitureId())
+                .orElseThrow(() -> new EntityNotFoundException("error.voiture.notfound"));
+        Client client = clientService.findClientEntityById(dto.getClientId());
+        Client conducteurSecondaire = dto.getConducteurSecondaireId() != null ?
+                clientService.findClientEntityById(dto.getConducteurSecondaireId()) : null;
+
+        // Calcul du prix
+        long jours = ChronoUnit.DAYS.between(dto.getDateDebut(), dto.getDateFin());
+        if (jours == 0) jours = 1;
+        float montantTotal = (float) (jours * voiture.getPrixDeBase());
+
+        // Mise à jour des champs
+        reservation.setVoiture(voiture);
+        reservation.setClient(client);
+        reservation.setConducteurSecondaire(conducteurSecondaire);
+        reservation.setDateDebut(dto.getDateDebut());
+        reservation.setDateFin(dto.getDateFin());
+        reservation.setAcompte(dto.getAcompte());
+        reservation.setStatut(dto.getStatut());
+        reservation.setMontantTotal(montantTotal);
+
+        Reservation updatedReservation = reservationRepository.save(reservation);
+        return mapToReservationResponseDTO(updatedReservation);
+    }
+    public boolean isVoitureAlreadyReservedForOther(Long voitureId, LocalDateTime dateDebut, LocalDateTime dateFin, Long currentReservationId) {
+        return reservationRepository.isVoitureAlreadyReservedForOther(voitureId, dateDebut, dateFin, currentReservationId);
+    }
+
 }
