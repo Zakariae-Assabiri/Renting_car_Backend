@@ -108,7 +108,8 @@ public class Client {
     	        this.tel = this.tel != null ? EncryptionUtil.decrypt(this.tel) : null;
     	        this.permis = this.permis != null ? EncryptionUtil.decrypt(this.permis) : null;
     	        this.photoCIN = this.photoCIN != null ? EncryptionUtil.decryptBytes(this.photoCIN) : null;
-    	        this.photoPermis =    this.photoPermis != null ? EncryptionUtil.decryptBytes(this.photoPermis) : null;
+    	        this.photoPermis = this.photoPermis != null ? EncryptionUtil.decryptBytes(this.photoPermis) : null;
+
     	    } catch (Exception e) {
     	        throw new RuntimeException("Erreur lors du déchiffrement des données", e);
     	    }
