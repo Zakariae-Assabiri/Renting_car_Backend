@@ -45,8 +45,10 @@ public class SecuriteConfig {
                     "/api/roles/**"
                 ).permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/voitures").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/voitures/**").permitAll()
                 .anyRequest().authenticated() // Toutes les autres routes doivent passer par PermissionFilter
             )
+            
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Authentifie d'abord avec JWT

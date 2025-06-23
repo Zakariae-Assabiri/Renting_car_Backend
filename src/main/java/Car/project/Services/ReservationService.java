@@ -27,18 +27,15 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ReservationService {
+	 @Autowired
+	 private ReservationRepository reservationRepository;
+	    @Autowired
+	 private VoitureRepository voitureRepository;
+	    @Autowired
+	 private ClientRepository clientRepository;
 
-    // --- Dépendances ---
-    private final ReservationRepository reservationRepository;
-    private final VoitureRepository voitureRepository;
-    private final ClientRepository clientRepository;
-
-    @Autowired
-    public ReservationService(ReservationRepository reservationRepository, VoitureRepository voitureRepository, ClientRepository clientRepository) {
-        this.reservationRepository = reservationRepository;
-        this.voitureRepository = voitureRepository;
-        this.clientRepository = clientRepository;
-    }
+   
+    
 
     // --- API Publique (CRUD) ---
 
@@ -135,13 +132,12 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public List<ReservationResponseDTO> findReservationsByClientId(Long clientId) {
-        if (!clientRepository.existsById(clientId)) {
-             throw new EntityNotFoundException("Impossible de trouver le client avec l'ID : " + clientId);
-        }
-        return reservationRepository.findByClientId(clientId).stream()
+        List<Reservation> reservations = reservationRepository.findReservationsByClientId(clientId);
+        return reservations.stream()
                 .map(this::mapToReservationResponseDTO)
                 .collect(Collectors.toList());
     }
+
 
     /**
      * NOUVELLE MÉTHODE AJOUTÉE

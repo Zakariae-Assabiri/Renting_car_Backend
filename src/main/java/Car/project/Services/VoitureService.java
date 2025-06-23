@@ -7,6 +7,8 @@ import Car.project.dto.VoitureDetailDTO;
 import Car.project.dto.VoitureDTO;
 import Car.project.exception.ResourceAlreadyExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +69,7 @@ public class VoitureService {
 
         voitureRepository.delete(voiture);
     }
-
+    @Transactional
     public List<VoitureDetailDTO> findVoituresDisponiblesDto(LocalDateTime dateDebut, LocalDateTime dateFin) {
         if (dateDebut.isAfter(dateFin)) {
             throw new IllegalArgumentException("error.dates.invalid");

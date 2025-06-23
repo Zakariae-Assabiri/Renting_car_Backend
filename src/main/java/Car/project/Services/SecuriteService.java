@@ -4,20 +4,22 @@ import Car.project.Entities.Client;
 import Car.project.Entities.Reservation;
 import Car.project.Repositories.ClientRepository;
 import Car.project.Repositories.ReservationRepository;
+import Car.project.Repositories.UserRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-
-@Service
+@Service("securiteService")
 public class SecuriteService {
+	@Autowired
+    private  ReservationRepository reservationRepository;
+	@Autowired
+    private  ClientRepository clientRepository;
+	@Autowired
+    private  UserRepository userRepository;
 
-    private final ReservationRepository reservationRepository;
-    private final ClientRepository clientRepository;
-
-    public SecuriteService(ReservationRepository reservationRepository, ClientRepository clientRepository) {
-        this.reservationRepository = reservationRepository;
-        this.clientRepository = clientRepository;
-    }
 
     // Vérifier si l'utilisateur est propriétaire de la réservation
     public boolean isReservationOwner(Long reservationId) {
@@ -50,6 +52,8 @@ public class SecuriteService {
                 .orElse(false);
     }
 
+
+
     // Vérifier si l'utilisateur est ADMIN ou propriétaire de la réservation
     public boolean isAdminOrOwner(Long reservationId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -58,7 +62,7 @@ public class SecuriteService {
         }
         return isReservationOwner(reservationId);
     }
- // Vérifier si l'utilisateur est ADMIN
+   // Vérifier si l'utilisateur est ADMIN
     public boolean isAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getAuthorities().stream()

@@ -54,9 +54,9 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @securiteService.isClientOwner(#id)")
     public ResponseEntity<ClientDetailDTO> updateClient(@PathVariable Long id, @Valid @ModelAttribute ClientDTO clientRequestDto) throws IOException {
-        // Le contrôleur passe l'ID et le DTO au service
+
         ClientDetailDTO updatedClientDto = clientService.updateClient(id, clientRequestDto);
         return ResponseEntity.ok(updatedClientDto);
     }

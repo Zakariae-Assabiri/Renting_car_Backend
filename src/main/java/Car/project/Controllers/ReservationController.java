@@ -17,13 +17,12 @@ import java.util.List;
 @RequestMapping("/api/reservations")
 public class ReservationController {
 
-    private final ReservationService reservationService;
+
+    @Autowired
+    private ReservationService reservationService;
 
     
-    @Autowired
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
+  
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -33,7 +32,6 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    
     @PreAuthorize("@securiteService.isAdminOrOwner(#id)")
     public ResponseEntity<ReservationResponseDTO> getReservationById(@PathVariable Long id) {
         
@@ -41,15 +39,6 @@ public class ReservationController {
         return ResponseEntity.ok(reservationDto);
     }
     
-    @GetMapping("/user/{userId}")
-    
-    @PreAuthorize("@securiteService.isOwnerOfUserResource(#userId) or hasRole('ADMIN')")
-    public ResponseEntity<List<ReservationResponseDTO>> getReservationsByUserId(@PathVariable Long userId) {
-        
-    	 List<ReservationResponseDTO> reservations = reservationService.findReservationsByUserId(userId);
-        return ResponseEntity.ok(reservations);
-    }
-
     @PostMapping
     @PreAuthorize("isAuthenticated()") 
     public ResponseEntity<ReservationResponseDTO> createReservation(@Valid @RequestBody ReservationRequestDTO reservationRequestDto) {
@@ -71,5 +60,11 @@ public class ReservationController {
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/client/{clientId}")
+    @PreAuthorize("@securiteService.isAdminOrOwner(#clientId)")
+    public ResponseEntity<List<ReservationResponseDTO>> getReservationsByClientId(@PathVariable Long clientId) {
+        List<ReservationResponseDTO> reservations = reservationService.findReservationsByClientId(clientId);
+        return ResponseEntity.ok(reservations);
     }
 }
